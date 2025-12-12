@@ -32,6 +32,10 @@ public class Activity {
 
     private String location;
 
+    @Min(value = 1, message = "Требуется хотя бы 1 волонтёр")
+    @Column(name = "required_volunteers", nullable = false)
+    private Integer requiredVolunteers;
+
     @Min(1) @Max(100)
     private Integer volunteerCount;
 

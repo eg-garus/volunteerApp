@@ -4,7 +4,13 @@ import com.volunteer.app.entity.Role;
 import com.volunteer.app.entity.User;
 import com.volunteer.app.exception.ResourceNotFoundException;
 import com.volunteer.app.repository.UserRepository;
+import com.volunteer.app.security.UserDetailsImpl;
+
 import jakarta.validation.Valid;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
