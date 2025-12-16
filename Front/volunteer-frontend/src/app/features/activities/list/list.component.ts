@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';  // ← обязательно!
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';  // ← добавь MatTableDataSource
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { Activity } from '../../../core/models/activity.model';
@@ -15,9 +13,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,              // ← это главное!
-    MatPaginatorModule,
-    MatSortModule,
+    MatTableModule,
     MatProgressSpinnerModule,
     MatButtonModule
   ],
@@ -26,7 +22,7 @@ import { Router } from '@angular/router';
 })
 export class ActivitiesListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'date', 'city', 'requiredVolunteers', 'actions'];
-  dataSource: Activity[] = [];
+  dataSource = new MatTableDataSource<Activity>([]);  // ← вот так!
   loading = true;
 
   constructor(
@@ -43,7 +39,7 @@ export class ActivitiesListComponent implements OnInit {
     this.loading = true;
     this.activityService.getAll().subscribe({
       next: (activities) => {
-        this.dataSource = activities;
+        this.dataSource.data = activities;  // ← присваиваем data
         this.loading = false;
       },
       error: (err) => {
@@ -53,8 +49,25 @@ export class ActivitiesListComponent implements OnInit {
     });
   }
 
-  applyForActivity(id: number) {
-    alert(`Заявка на мероприятие ${id} отправлена!`);
+applyForActivity(id: number) {
+  if (!this.authService.isLoggedIn()) {
+    alert('Пожалуйста, войдите в систему');
+    this.router.navigate(['/auth/login']);
+    return;
+  }
+
+  const comment = prompt('Комментарий к заявке (необязательно):', '');
+    this.activityService.applyForActivity(id, comment || '').subscribe({
+      next: (app) => {
+        alert('Заявка успешно отправлена! Ожидайте одобрения.');
+        // Можно обновить список
+        this.loadActivities();
+      },
+      error: (err) => {
+        const msg = err.error?.message || 'Ошибка при подаче заявки';
+        alert(msg);
+      }
+    });
   }
 
   editActivity(id: number) {

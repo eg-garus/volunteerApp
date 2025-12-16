@@ -23,17 +23,21 @@ export class AuthService {
       .pipe(tap(response => this.setSession(response)));
   }
 
-  login(credentials: LoginRequest): Observable<AuthResponse> {
+  login(credentials: { login: string; password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)
-      .pipe(tap(response => this.setSession(response)));
+      .pipe(
+        tap(response => this.setSession(response))
+      );
   }
 
-  private setSession(authResult: AuthResponse) {
+  setSession(authResult: AuthResponse) {
     localStorage.setItem(this.TOKEN_KEY, authResult.token);
     localStorage.setItem(this.ROLE_KEY, authResult.role);
 
+    const login = this.getLoginFromToken(authResult.token);  // ← всегда берём из токена
+
     this.currentUserSubject.next({
-      login: this.getLoginFromToken(authResult.token), // можно декодировать токен, если нужно
+      login: login || 'Неизвестно',  // ← на всякий случай
       role: authResult.role
     });
   }
@@ -58,9 +62,12 @@ export class AuthService {
 
   private loadUserFromStorage() {
     const token = localStorage.getItem(this.TOKEN_KEY);
-    const role = this.getRole();
-    if (token && role) {
-      this.currentUserSubject.next({ login: '', role });
+    if (token) {
+      const login = this.getLoginFromToken(token);
+      const role = this.getRole();
+      if (role) {
+        this.currentUserSubject.next({ login, role });
+      }
     }
   }
 

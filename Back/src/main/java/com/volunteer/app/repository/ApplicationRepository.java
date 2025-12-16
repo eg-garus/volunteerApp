@@ -1,7 +1,9 @@
 package com.volunteer.app.repository;
 
+import com.volunteer.app.entity.Activity;
 import com.volunteer.app.entity.Application;
 import com.volunteer.app.entity.Status;
+import com.volunteer.app.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
@@ -11,4 +13,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     List<Application> findByStatus(Status status);
     List<Application> findByUserIdAndStatus(Long userId, Status status);
     long countByActivityIdAndStatus(Long activityId, Status status);
+    boolean existsByUserAndActivity(User user, Activity activity);
 }

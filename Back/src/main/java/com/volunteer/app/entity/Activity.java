@@ -9,6 +9,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
@@ -56,5 +58,6 @@ public class Activity {
     private List<Event> events;
 
     @OneToMany(mappedBy = "activity")
+    @JsonIgnore
     private List<Application> applications;
 }

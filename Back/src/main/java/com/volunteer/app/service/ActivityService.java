@@ -60,6 +60,11 @@ public class ActivityService {
         return activityRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public List<Activity> findAllList() {
+        return activityRepository.findAll();
+    }
+
     // Пример сортировки и фильтрации (по дате, названию, городу)
     @Transactional(readOnly = true)
     public List<Activity> search(String name, String city, LocalDateTime afterDate, Sort sort) {

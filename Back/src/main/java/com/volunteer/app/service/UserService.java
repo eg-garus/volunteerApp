@@ -46,6 +46,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+        .orElseThrow(() -> new ResourceNotFoundException("Пользователь с такой почтой не найден: " + email));
+    }
+
+    @Transactional(readOnly = true)
     public User findByLogin(String login) {
         return userRepository.findByLogin(login)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден: " + login));

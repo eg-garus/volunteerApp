@@ -21,10 +21,17 @@ public class ActivityController {
         this.activityService = activityService;
     }
 
+    // Новый метод — возвращает простой список (для фронтенда)
     @GetMapping
-    public ResponseEntity<Page<Activity>> getAll(Pageable pageable) {
-        return ResponseEntity.ok(activityService.findAll(pageable));
+    public ResponseEntity<List<Activity>> getAll() {
+        return ResponseEntity.ok(activityService.findAllList());
     }
+
+    // Если хочешь оставить пагинацию — сделай отдельный эндпоинт
+    // @GetMapping("/paged")
+    // public ResponseEntity<Page<Activity>> getAllPaged(Pageable pageable) {
+    //     return ResponseEntity.ok(activityService.findAll(pageable));
+    // }
 
     @GetMapping("/{id}")
     public ResponseEntity<Activity> getById(@PathVariable Long id) {

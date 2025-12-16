@@ -2,7 +2,7 @@
 
 <mat-progress-spinner *ngIf="loading" mode="indeterminate"></mat-progress-spinner>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="!loading">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="!loading && dataSource.data.length > 0">
 
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef> Название </th>
@@ -39,9 +39,15 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<div *ngIf="!loading && dataSource.length === 0">
+<div *ngIf="!loading && dataSource.data.length === 0">
   <p>Мероприятий пока нет. Создайте первое!</p>
   <button mat-raised-button color="accent" routerLink="/activities/create" *ngIf="authService.isAdmin()">
     Создать мероприятие
+  </button>
+</div>
+
+<div class="header-actions" *ngIf="authService.isAdmin()">
+  <button mat-raised-button color="accent" routerLink="/activities/create">
+    Создать новое мероприятие
   </button>
 </div>

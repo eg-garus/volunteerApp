@@ -1,33 +1,30 @@
-package com.volunteer.app.entity;   // ← всё строчными буквами
+package com.volunteer.app.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@Data
 @Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 4, max = 20, message = "Логин должен быть от 4 до 20 символов")
     private String login;
 
-    @NotBlank
-    @Size(min = 6, max = 30, message = "Пароль должен быть от 6 до 30 символов")
     private String password;
 
-    @Email @NotBlank
+    @Email
+    @NotBlank
     private String email;
 
-    @NotBlank @Size(min = 4, max = 30)
+    @NotBlank
+    @Size(min = 4, max = 30)
     private String lastName;
 
-    @NotBlank @Size(min = 4, max = 30)
+    @NotBlank
+    @Size(min = 4, max = 30)
     private String firstName;
 
     @Size(max = 30)
@@ -36,12 +33,102 @@ public class User {
     @Pattern(regexp = "\\d{11}")
     private String phone;
 
-    @Min(1900) @Max(2025)
+    @Min(1900)
+    @Max(2025)
     private Integer birthYear;
 
     private String languages;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.VOLUNTEER;  // VOLUNTEER или ADMIN
+    private Role role = Role.VOLUNTEER;
+
+    // ГЕТТЕРЫ И СЕТТЕРЫ (добавляем вручную)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getBirthYear() {
+        return birthYear;
+    }
+
+    public void setBirthYear(Integer birthYear) {
+        this.birthYear = birthYear;
+    }
+
+    public String getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(String languages) {
+        this.languages = languages;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

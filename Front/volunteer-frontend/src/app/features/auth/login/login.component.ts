@@ -42,16 +42,19 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.invalid) return;
 
-    this.loading = true;
-    this.error = '';
+    const credentials = this.loginForm.value;
 
-    this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
+    this.authService.login(credentials).subscribe({
+      next: (response) => {
+        // ← ВАЖНО: сохраняем сессию!
+        this.authService.setSession(response);
+
+        // Редирект на список мероприятий
         this.router.navigate(['/activities']);
       },
       error: (err) => {
-        this.error = 'Неверный логин или пароль';
-        this.loading = false;
+        console.error('Ошибка логина', err);
+        alert('Неверный логин или пароль');
       }
     });
   }

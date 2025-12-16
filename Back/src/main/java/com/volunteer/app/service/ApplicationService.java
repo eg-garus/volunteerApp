@@ -1,23 +1,49 @@
 package com.volunteer.app.service;
 
+import com.volunteer.app.entity.Activity;
 import com.volunteer.app.entity.Application;
 import com.volunteer.app.entity.Status;
+import com.volunteer.app.entity.User;
 import com.volunteer.app.exception.ResourceNotFoundException;
 import com.volunteer.app.repository.ApplicationRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.volunteer.app.dto.ApplicationDto;
+
 @Service
 public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
+    private final UserService userService;
+    private final ActivityService activityService;
 
-    public ApplicationService(ApplicationRepository applicationRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository,
+                              UserService userService,
+                              ActivityService activityService) {
         this.applicationRepository = applicationRepository;
+        this.userService = userService;
+        this.activityService = activityService;
     }
+
+    @Transactional(readOnly = true)
+    public List<ApplicationDto> findAllForAdmin() {
+    List<Application> apps = applicationRepository.findAll();
+    return apps.stream().map(app -> {
+        ApplicationDto dto = new ApplicationDto();
+        dto.setId(app.getId());
+        dto.setActivityName(app.getActivity().getName());
+        dto.setUserLogin(app.getUser().getLogin());  // ← добавь поле userLogin в DTO
+        dto.setComment(app.getComment());
+        dto.setStatus(app.getStatus());
+        dto.setSubmissionDate(app.getSubmissionDate());
+        return dto;
+    }).toList();
+}
 
     @Transactional
     public Application submit(Application application) {
@@ -47,9 +73,18 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<Application> findByUser(Long userId) {
-        return applicationRepository.findByUserId(userId);
-    }
+    public List<ApplicationDto> findByUser(Long userId) {
+        List<Application> apps = applicationRepository.findByUserId(userId);
+        return apps.stream().map(app -> {
+        ApplicationDto dto = new ApplicationDto();
+        dto.setId(app.getId());
+        dto.setActivityName(app.getActivity().getName());  // ← название мероприятия
+        dto.setComment(app.getComment());
+        dto.setStatus(app.getStatus());
+        dto.setSubmissionDate(app.getSubmissionDate());
+        return dto;
+    }).toList();
+}
 
     @Transactional(readOnly = true)
     public List<Application> findByActivity(Long activityId) {
@@ -60,5 +95,24 @@ public class ApplicationService {
     @Transactional(readOnly = true)
     public long countApprovedByActivity(Long activityId) {
         return applicationRepository.countByActivityIdAndStatus(activityId, Status.APPROVED);
+    }
+
+    @Transactional
+    public Application submit(Long activityId, String login, String comment) {
+        User user = userService.findByLogin(login);
+        Activity activity = activityService.findById(activityId);
+
+        if (applicationRepository.existsByUserAndActivity(user, activity)) {
+            throw new IllegalArgumentException("Заявка уже подана");
+        }
+
+        Application app = new Application();
+        app.setUser(user);
+        app.setActivity(activity);
+        app.setComment(comment);
+        app.setStatus(Status.PENDING);  // ← используем enum, а не строку
+        app.setSubmissionDate(LocalDateTime.now());
+
+        return applicationRepository.save(app);
     }
 }
