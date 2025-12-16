@@ -1,8 +1,18 @@
 <mat-toolbar color="primary">
-  <span>Волонтёрская платформа</span>
+  <span class="title">Волонтёрская платформа</span>
   <span class="spacer"></span>
+
   <button mat-button routerLink="/activities">Мероприятия</button>
   <button mat-button routerLink="/events">События</button>
-  <button mat-button routerLink="/applications/my">Мои заявки</button>
-  <button mat-button routerLink="/auth/login">Выйти</button>
+
+  <ng-container *ngIf="authService.isLoggedIn(); else guest">
+    <button mat-button routerLink="/applications/my">Мои заявки</button>
+    <button mat-button *ngIf="authService.isAdmin()" routerLink="/applications/admin">Админка заявок</button>
+    <button mat-button (click)="logout()">Выйти</button>
+  </ng-container>
+
+  <ng-template #guest>
+    <button mat-button routerLink="/auth/login">Вход</button>
+    <button mat-button routerLink="/auth/register">Регистрация</button>
+  </ng-template>
 </mat-toolbar>

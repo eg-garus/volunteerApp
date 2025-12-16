@@ -13,10 +13,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank @Size(min = 4, max = 8)
+    @NotBlank
+    @Size(min = 4, max = 20, message = "Логин должен быть от 4 до 20 символов")
     private String login;
 
-    @NotBlank @Size(min = 4, max = 12)
+    @NotBlank
+    @Size(min = 6, max = 30, message = "Пароль должен быть от 6 до 30 символов")
     private String password;
 
     @Email @NotBlank

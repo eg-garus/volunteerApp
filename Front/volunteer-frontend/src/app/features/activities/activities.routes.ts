@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 
 export const activitiesRoutes: Routes = [
   {
-    path: '',
-    loadComponent: () => import('./list/list.component').then(c => c.ListComponent)
+  path: '',
+  loadComponent: () => import('./list/list.component').then(c => c.ActivitiesListComponent)
   },
   {
     path: ':id',

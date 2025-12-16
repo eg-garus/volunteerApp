@@ -1,1 +1,47 @@
-<p>list works!</p>
+<h2>Доступные мероприятия</h2>
+
+<mat-progress-spinner *ngIf="loading" mode="indeterminate"></mat-progress-spinner>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="!loading">
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Название </th>
+    <td mat-cell *matCellDef="let activity"> {{activity.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="date">
+    <th mat-header-cell *matHeaderCellDef> Дата </th>
+    <td mat-cell *matCellDef="let activity"> {{activity.date | date:'short'}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="city">
+    <th mat-header-cell *matHeaderCellDef> Город </th>
+    <td mat-cell *matCellDef="let activity"> {{activity.city}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="requiredVolunteers">
+    <th mat-header-cell *matHeaderCellDef> Нужно волонтёров </th>
+    <td mat-cell *matCellDef="let activity"> {{activity.requiredVolunteers}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Действия </th>
+    <td mat-cell *matCellDef="let activity">
+      <button mat-raised-button color="primary" (click)="applyForActivity(activity.id)" *ngIf="authService.isLoggedIn()">
+        Подать заявку
+      </button>
+      <button mat-button (click)="editActivity(activity.id)" *ngIf="authService.isAdmin()">Редактировать</button>
+      <button mat-button color="warn" (click)="deleteActivity(activity.id)" *ngIf="authService.isAdmin()">Удалить</button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<div *ngIf="!loading && dataSource.length === 0">
+  <p>Мероприятий пока нет. Создайте первое!</p>
+  <button mat-raised-button color="accent" routerLink="/activities/create" *ngIf="authService.isAdmin()">
+    Создать мероприятие
+  </button>
+</div>
