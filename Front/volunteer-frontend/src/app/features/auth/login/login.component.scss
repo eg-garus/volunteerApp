@@ -1,23 +1,8 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-}
-
 .full-width {
   width: 100%;
-  margin-bottom: 16px;
 }
 
-.error {
-  color: red;
+.text-center {
   text-align: center;
-  margin: 16px 0;
+  margin-top: 20px;
 }

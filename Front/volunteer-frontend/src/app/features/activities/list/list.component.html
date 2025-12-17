@@ -39,15 +39,8 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<div *ngIf="!loading && dataSource.data.length === 0">
-  <p>Мероприятий пока нет. Создайте первое!</p>
-  <button mat-raised-button color="accent" routerLink="/activities/create" *ngIf="authService.isAdmin()">
-    Создать мероприятие
-  </button>
-</div>
-
 <div class="header-actions" *ngIf="authService.isAdmin()">
-  <button mat-raised-button color="accent" routerLink="/activities/create">
+  <button mat-raised-button color="accent" (click)="goToCreate()">
     Создать новое мероприятие
   </button>
 </div>

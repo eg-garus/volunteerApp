@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -15,46 +13,36 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
+    MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatProgressSpinnerModule
+    MatButtonModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  loginForm: FormGroup;
-  loading = false;
-  error = '';
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
+  });
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {
-    this.loginForm = this.fb.group({
-      login: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(4)]]
-    });
-  }
+  ) {}
 
   onSubmit() {
     if (this.loginForm.invalid) return;
 
-    const credentials = this.loginForm.value;
+    const credentials = this.loginForm.value as { email: string; password: string };
 
     this.authService.login(credentials).subscribe({
-      next: (response) => {
-        // ← ВАЖНО: сохраняем сессию!
-        this.authService.setSession(response);
-
-        // Редирект на список мероприятий
+      next: () => {
         this.router.navigate(['/activities']);
       },
       error: (err) => {
-        console.error('Ошибка логина', err);
-        alert('Неверный логин или пароль');
+        alert('Неверный email или пароль');
       }
     });
   }

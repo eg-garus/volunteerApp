@@ -23,7 +23,7 @@ export class AuthService {
       .pipe(tap(response => this.setSession(response)));
   }
 
-  login(credentials: { login: string; password: string }): Observable<AuthResponse> {
+  login(credentials: { email: string; password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)
       .pipe(
         tap(response => this.setSession(response))

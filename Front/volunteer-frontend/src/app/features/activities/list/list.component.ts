@@ -49,6 +49,10 @@ export class ActivitiesListComponent implements OnInit {
     });
   }
 
+goToCreate() {
+  this.router.navigate(['/activities/create']);
+}
+
 applyForActivity(id: number) {
   if (!this.authService.isLoggedIn()) {
     alert('Пожалуйста, войдите в систему');

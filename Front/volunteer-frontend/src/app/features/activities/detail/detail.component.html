@@ -1,1 +1,21 @@
-<p>detail works!</p>
+<div class="page-container">
+  <div class="card">
+    <mat-progress-spinner *ngIf="loading" mode="indeterminate"></mat-progress-spinner>
+
+    <div *ngIf="!loading && activity">
+      <h2>{{ activity.name }}</h2>
+
+      <p><strong>Описание:</strong> {{ activity.description }}</p>
+      <p><strong>Дата:</strong> {{ activity.date | date:'fullDate' }}</p>
+      <p><strong>Город:</strong> {{ activity.city }}</p>
+      <p><strong>Нужно волонтёров:</strong> {{ activity.requiredVolunteers }}</p>
+      <p><strong>Уровень:</strong> {{ activity.level || 'Не указан' }}</p>
+
+      <button mat-raised-button color="primary" (click)="applyForActivity()" *ngIf="authService.isLoggedIn()">
+        Подать заявку
+      </button>
+    </div>
+
+    <p *ngIf="!loading && !activity">Мероприятие не найдено</p>
+  </div>
+</div>

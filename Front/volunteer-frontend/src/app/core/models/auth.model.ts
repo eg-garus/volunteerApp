@@ -1,5 +1,5 @@
 export interface LoginRequest {
-  login: string;
+  email: string;
   password: string;
 }
 
@@ -15,10 +15,10 @@ export interface RegisterRequest {
 
 export interface AuthResponse {
   token: string;
-  role: 'VOLUNTEER' | 'ADMIN';
+  role: string;
 }
 
 export interface CurrentUser {
   login: string;
-  role: 'VOLUNTEER' | 'ADMIN';
+  role: string;
 }
