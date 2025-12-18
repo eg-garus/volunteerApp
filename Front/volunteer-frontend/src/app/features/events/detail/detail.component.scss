@@ -63,3 +63,22 @@
 .mb-30 {
   margin-bottom: 30px;
 }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
+
+.event-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}

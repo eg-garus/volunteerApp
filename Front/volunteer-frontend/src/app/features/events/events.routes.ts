@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from '../../core/guards/auth.guard'; // если есть
+import { FormComponent } from './form/form.component';
 
 export const eventsRoutes: Routes = [
   {
@@ -12,7 +13,7 @@ export const eventsRoutes: Routes = [
   },
   {
     path: 'create',
-    loadComponent: () => import('./form/form.component').then(c => c.FormComponent),
+    component: FormComponent,
     canActivate: [adminGuard]
   },
   {

@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
+import { MatIcon } from "@angular/material/icon";
 
 interface UserProfile {
   id: number;
@@ -28,8 +29,9 @@ interface UserProfile {
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
-  ],
+    MatButtonModule,
+    MatIcon
+],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -40,8 +42,10 @@ export class ProfileComponent implements OnInit {
     lastName: ['', Validators.required],
     middleName: [''],
     phone: [''],
-    birthYear: [null as number | null]
+    birthYear: [null as number | null],
+    languages: ['']
     });
+loading: any;
 
   constructor(
     private fb: FormBuilder,

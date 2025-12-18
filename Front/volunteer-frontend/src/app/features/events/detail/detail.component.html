@@ -8,16 +8,27 @@
       <div class="event-info">
         <p><strong>Описание:</strong> {{ event.description || 'Не указано' }}</p>
         <p><strong>Город:</strong> {{ event.city }}</p>
+        <p><strong>Адрес:</strong> {{ event.address || 'Не указан' }}</p>
+        <p><strong>Организатор:</strong> {{ event.organizer || 'Не указан' }}</p>
+        <p><strong>Телефон:</strong> {{ event.contactPhone || 'Не указан' }}</p>
+        <p><strong>Email:</strong> {{ event.contactEmail || 'Не указан' }}</p>
+        <p *ngIf="event.website"><strong>Сайт:</strong> <a [href]="event.website" target="_blank">{{ event.website }}</a></p>
         <p><strong>Дата начала:</strong> {{ event.startDate | date:'fullDate' }}</p>
         <p><strong>Дата окончания:</strong> {{ event.endDate | date:'fullDate' }}</p>
         <p><strong>Тип:</strong> {{ event.type || 'Не указан' }}</p>
         <p><strong>Вид:</strong> {{ event.kind || 'Не указан' }}</p>
       </div>
 
-      <!-- Кнопка добавления задачи для админа -->
+      <!-- Кнопки управления событием для админа -->
       <div class="actions mb-30" *ngIf="authService.isAdmin()">
         <button mat-raised-button color="accent" [routerLink]="['/events', event.id, 'activities', 'create']">
           Добавить задачу
+        </button>
+        <button mat-raised-button color="primary" [routerLink]="['/events', event.id, 'edit']" class="ml-10">
+          Редактировать событие
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteEvent(event.id)" class="ml-10">
+          Удалить событие
         </button>
       </div>
 
@@ -36,9 +47,17 @@
             <p><strong>Уровень:</strong> {{ activity.level || 'Не указан' }}</p>
             <p><strong>Город:</strong> {{ activity.city }}</p>
           </mat-card-content>
-          <mat-card-actions>
+          <mat-card-actions align="end">
             <button mat-raised-button color="primary" (click)="applyForActivity(activity.id)" *ngIf="authService.isLoggedIn()">
               Подать заявку
+            </button>
+
+            <!-- Кнопки редактирования и удаления задачи — только для админа -->
+            <button mat-raised-button color="primary" (click)="editActivity(activity.id)" *ngIf="authService.isAdmin()" class="ml-10">
+              Редактировать
+            </button>
+            <button mat-raised-button color="warn" (click)="deleteActivity(activity.id)" *ngIf="authService.isAdmin()" class="ml-10">
+              Удалить
             </button>
           </mat-card-actions>
         </mat-card>

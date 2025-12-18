@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';  // ← добавь UrlTree в импорт
 import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = () => {
@@ -10,8 +10,7 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/auth/login']);
-  return false;
+  return router.createUrlTree(['/auth/login']);  // ← возвращай UrlTree
 };
 
 export const adminGuard: CanActivateFn = () => {
@@ -22,6 +21,5 @@ export const adminGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/activities']);
-  return false;
+  return router.createUrlTree(['/events']);  // ← возвращай UrlTree
 };

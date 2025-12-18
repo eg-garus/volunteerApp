@@ -81,28 +81,43 @@ export class ActivityFormComponent implements OnInit {
 
   onSubmit() {
     if (this.form.invalid || !this.eventId) {
-      alert('Заполните все обязательные поля и укажите событие');
+      alert('Заполните форму и укажите событие');
       return;
     }
 
     this.loading = true;
 
-    const activityData = this.form.value as Activity;
+    const activityData = this.form.value;
 
-    const request = this.isEdit && this.activityId
-      ? this.http.put<Activity>(`${environment.apiUrl}/activities/${this.activityId}`, activityData)
-      : this.http.post<Activity>(`${environment.apiUrl}/activities?eventId=${this.eventId}`, activityData);
+    let request;
+
+    if (this.isEdit && this.activityId) {
+      // Редактирование — PUT на /api/activities/{id}
+      request = this.http.put<Activity>(
+        `${environment.apiUrl}/activities/${this.activityId}`,
+        activityData,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    } else {
+      // Создание — POST с eventId в query
+      const url = `${environment.apiUrl}/activities?eventId=${this.eventId}`;
+      request = this.http.post<Activity>(
+        url,
+        activityData,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     request.subscribe({
       next: () => {
         this.loading = false;
-        alert('Задача успешно сохранена!');
+        alert(this.isEdit ? 'Задача обновлена!' : 'Задача создана!');
         this.router.navigate(['/events', this.eventId]);
       },
       error: (err) => {
         this.loading = false;
-        console.error('Ошибка сохранения задачи', err);
-        alert(err.error?.message || 'Не удалось сохранить задачу. Попробуйте позже.');
+        console.error(err);
+        alert(err.error?.message || 'Ошибка при сохранении задачи');
       }
     });
   }
