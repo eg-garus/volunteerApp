@@ -5,8 +5,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
-import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../environments/environment';
+import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 
 interface UserProfile {

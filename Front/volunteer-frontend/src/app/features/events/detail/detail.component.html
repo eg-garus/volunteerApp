@@ -1,1 +1,54 @@
-<p>detail works!</p>
+<div class="page-container">
+  <div class="card">
+    <mat-progress-spinner *ngIf="loading" mode="indeterminate" class="spinner"></mat-progress-spinner>
+
+    <div *ngIf="!loading && event">
+      <h2 class="event-title">{{ event.name }}</h2>
+
+      <div class="event-info">
+        <p><strong>Описание:</strong> {{ event.description || 'Не указано' }}</p>
+        <p><strong>Город:</strong> {{ event.city }}</p>
+        <p><strong>Дата начала:</strong> {{ event.startDate | date:'fullDate' }}</p>
+        <p><strong>Дата окончания:</strong> {{ event.endDate | date:'fullDate' }}</p>
+        <p><strong>Тип:</strong> {{ event.type || 'Не указан' }}</p>
+        <p><strong>Вид:</strong> {{ event.kind || 'Не указан' }}</p>
+      </div>
+
+      <!-- Кнопка добавления задачи для админа -->
+      <div class="actions mb-30" *ngIf="authService.isAdmin()">
+        <button mat-raised-button color="accent" [routerLink]="['/events', event.id, 'activities', 'create']">
+          Добавить задачу
+        </button>
+      </div>
+
+      <h3 class="section-title">Задачи в рамках события</h3>
+
+      <div class="activities-list" *ngIf="activities.length > 0">
+        <mat-card class="activity-card" *ngFor="let activity of activities">
+          <mat-card-header>
+            <mat-card-title>{{ activity.name }}</mat-card-title>
+            <mat-card-subtitle>
+              {{ activity.date | date:'short' }} • Нужно: {{ activity.requiredVolunteers }} чел.
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{ activity.description || 'Описание отсутствует' }}</p>
+            <p><strong>Уровень:</strong> {{ activity.level || 'Не указан' }}</p>
+            <p><strong>Город:</strong> {{ activity.city }}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="applyForActivity(activity.id)" *ngIf="authService.isLoggedIn()">
+              Подать заявку
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <p class="no-data" *ngIf="activities.length === 0">
+        Задач пока нет.
+      </p>
+    </div>
+
+    <p *ngIf="!loading && !event">Событие не найдено</p>
+  </div>
+</div>
