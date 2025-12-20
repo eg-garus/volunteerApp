@@ -33,24 +33,35 @@ export class MyApplicationsComponent implements OnInit {
     this.loadMyApplications();
   }
 
-
-loadMyApplications() {
-  this.loading = true;
-  this.http.get<ApplicationDto[]>(`${environment.apiUrl}/applications/my`).subscribe({
-    next: (apps) => {
-      this.dataSource = apps.map(app => ({
-        id: app.id,
-        activityName: app.activityName || 'Неизвестно',
-        comment: app.comment,
-        status: app.status,
-        submissionDate: app.submissionDate
-      }));
-      this.loading = false;
-    },
-    error: (err) => {
-      console.error('Ошибка', err);
-      this.loading = false;
+  delete(id: number) {
+    if (confirm('Отозвать заявку?')) {
+      this.http.delete(`${environment.apiUrl}/applications/${id}`).subscribe({
+        next: () => {
+          alert('Заявка отозвана');
+          this.loadMyApplications();
+        },
+        error: () => alert('Ошибка при отзыве')
+      });
     }
-  });
-}
+  }
+
+  loadMyApplications() {
+    this.loading = true;
+    this.http.get<ApplicationDto[]>(`${environment.apiUrl}/applications/my`).subscribe({
+      next: (apps) => {
+        this.dataSource = apps.map(app => ({
+          id: app.id,
+          activityName: app.activityName || 'Неизвестно',
+          comment: app.comment,
+          status: app.status,
+          submissionDate: app.submissionDate
+        }));
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Ошибка', err);
+        this.loading = false;
+      }
+    });
+  }
 }

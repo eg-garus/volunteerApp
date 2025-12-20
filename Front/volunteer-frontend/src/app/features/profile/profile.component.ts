@@ -19,6 +19,7 @@ interface UserProfile {
   middleName?: string;
   phone?: string;
   birthYear?: number;
+  languages?: string;
 }
 
 @Component({
@@ -58,16 +59,30 @@ loading: any;
     this.loadProfile();
   }
 
-    loadProfile() {
+  private loadProfile() {
+    this.loading = true;
+
     this.http.get<UserProfile>(`${environment.apiUrl}/profile`).subscribe({
-        next: (user) => {
+      next: (user) => {
         this.profileForm.patchValue({
-            ...user,
-            birthYear: user.birthYear ?? null  // ← на всякий случай
+          email: user.email || '',
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
+          middleName: user.middleName || '',
+          phone: user.phone || '',
+          birthYear: user.birthYear ?? null,           // если null или undefined — null
+          languages: user.languages || ''              // если null — пустая строка
         });
-        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Ошибка загрузки профиля:', err);
+        alert('Не удалось загрузить данные профиля. Попробуйте позже.');
+      }
     });
-    }
+  }
 
   onSubmit() {
     if (this.profileForm.invalid) return;

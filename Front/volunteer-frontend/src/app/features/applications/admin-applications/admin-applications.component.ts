@@ -45,6 +45,18 @@ export class AdminApplicationsComponent implements OnInit {
     });
   }
 
+  delete(id: number) {
+    if (confirm('Удалить заявку? Это действие необратимо.')) {
+      this.http.delete(`${environment.apiUrl}/applications/${id}`).subscribe({
+        next: () => {
+          alert('Заявка удалена');
+          this.loadAllApplications();
+        },
+        error: () => alert('Ошибка при удалении')
+      });
+    }
+  }
+
   approve(id: number) {
     this.http.put(`${environment.apiUrl}/applications/${id}/approve`, {}).subscribe(() => {
       this.loadAllApplications();

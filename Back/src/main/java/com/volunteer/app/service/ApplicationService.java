@@ -1,19 +1,18 @@
 package com.volunteer.app.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.volunteer.app.dto.ApplicationDto;
 import com.volunteer.app.entity.Activity;
 import com.volunteer.app.entity.Application;
 import com.volunteer.app.entity.Status;
 import com.volunteer.app.entity.User;
 import com.volunteer.app.exception.ResourceNotFoundException;
 import com.volunteer.app.repository.ApplicationRepository;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import com.volunteer.app.dto.ApplicationDto;
 
 @Service
 public class ApplicationService {
@@ -44,6 +43,12 @@ public class ApplicationService {
         return dto;
     }).toList();
 }
+
+    @Transactional
+    public void delete(Long id, String userLogin) {
+        Application app = findById(id);
+        applicationRepository.delete(app);
+    }
 
     @Transactional
     public Application submit(Application application) {

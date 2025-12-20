@@ -56,6 +56,6 @@ export class ListComponent implements OnInit {
   }
 
   goToCreate() {
-    this.router.navigate(['/events/create']);
+    this.router.navigate(['events', 'create']);
   }
 }

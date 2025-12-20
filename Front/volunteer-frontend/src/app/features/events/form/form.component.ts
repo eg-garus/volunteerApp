@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Event } from '../../../core/models/event.model';
-import { MatIcon } from "@angular/material/icon";
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-event-form',
@@ -25,12 +25,17 @@ import { MatIcon } from "@angular/material/icon";
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
-    MatIcon
-],
+    MatIconModule
+  ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
 export class FormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   form = this.fb.group({
     name: ['', Validators.required],
     description: [''],
@@ -51,15 +56,10 @@ export class FormComponent implements OnInit {
   eventId: number | null = null;
   loading = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
-
   ngOnInit(): void {
-    this.eventId = this.route.snapshot.paramMap.get('id') ? Number(this.route.snapshot.paramMap.get('id')) : null;
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.eventId = idParam ? Number(idParam) : null;
+
     if (this.eventId) {
       this.isEdit = true;
       this.loadEvent();

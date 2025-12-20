@@ -17,6 +17,10 @@ export const appRoutes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'events/create',
+    loadComponent: () => import('./features/events/form/form.component').then(r => r.FormComponent)
+  },
+  {
     path: 'events',
     loadChildren: () => import('./features/events/events.routes').then(r => r.eventsRoutes)
   },
