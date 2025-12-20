@@ -9,10 +9,46 @@
       </button>
     </div>
 
+    <!-- Блок фильтров -->
+    <div class="filters" *ngIf="!loading && events.length > 0">
+      <mat-form-field appearance="fill">
+        <mat-label>Поиск по названию</mat-label>
+        <input matInput [(ngModel)]="searchText" (input)="applyFilter()" placeholder="Введите название">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Город</mat-label>
+        <mat-select [(ngModel)]="selectedCity" (selectionChange)="applyFilter()">
+          <mat-option value="">Все города</mat-option>
+          <mat-option *ngFor="let city of uniqueCities" [value]="city">{{ city }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Тип события</mat-label>
+        <mat-select [(ngModel)]="selectedType" (selectionChange)="applyFilter()">
+          <mat-option value="">Все типы</mat-option>
+          <mat-option *ngFor="let type of uniqueTypes" [value]="type">{{ type || 'Не указан' }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Вид события</mat-label>
+        <mat-select [(ngModel)]="selectedKind" (selectionChange)="applyFilter()">
+          <mat-option value="">Все виды</mat-option>
+          <mat-option *ngFor="let kind of uniqueKinds" [value]="kind">{{ kind || 'Не указан' }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button color="warn" (click)="clearFilters()" *ngIf="hasFilters()">
+        Очистить фильтры
+      </button>
+    </div>
+
     <mat-progress-spinner *ngIf="loading" mode="indeterminate" class="spinner"></mat-progress-spinner>
 
-    <div class="events-grid" *ngIf="!loading && events.length > 0">
-      <mat-card class="event-card" *ngFor="let event of events" (click)="goToEvent(event.id)">
+    <div class="events-grid" *ngIf="!loading && filteredEvents.length > 0">
+      <mat-card class="event-card" *ngFor="let event of filteredEvents" (click)="goToEvent(event.id)">
         <mat-card-header>
           <mat-card-title>{{ event.name }}</mat-card-title>
           <mat-card-subtitle>
@@ -35,6 +71,12 @@
       </mat-card>
     </div>
 
+    <p class="empty-text" *ngIf="!loading && filteredEvents.length === 0">
+      Событий по выбранным фильтрам не найдено.
+    </p>
 
+    <p class="empty-text" *ngIf="!loading && events.length === 0">
+      Событий пока нет.
+    </p>
   </div>
 </div>

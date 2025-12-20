@@ -58,3 +58,15 @@
   color: #656565;
   margin-top: 60px;
 }
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 20px 0;
+  align-items: end;
+}
+
+.filters mat-form-field {
+  min-width: 200px;
+}
