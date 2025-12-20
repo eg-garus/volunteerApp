@@ -1,1 +1,116 @@
-<p>form works!</p>
+<div class="page-container">
+  <div class="card">
+    <h2 class="form-title">
+      {{ isEdit ? 'Редактировать событие' : 'Создать новое событие' }}
+    </h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Основная информация -->
+      <div class="form-section">
+        <h3 class="section-title">Основная информация</h3>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Название события</mat-label>
+          <input matInput formControlName="name" required>
+          <mat-icon matSuffix>event</mat-icon>
+          <mat-hint>Короткое и запоминающееся название</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Описание</mat-label>
+          <textarea matInput formControlName="description" rows="5"></textarea>
+          <mat-icon matSuffix>description</mat-icon>
+        </mat-form-field>
+
+        <div class="date-group">
+          <mat-form-field appearance="fill">
+            <mat-label>Дата начала</mat-label>
+            <input matInput type="datetime-local" formControlName="startDate" required>
+            <mat-icon matSuffix>calendar_today</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Дата окончания</mat-label>
+            <input matInput type="datetime-local" formControlName="endDate" required>
+            <mat-icon matSuffix>calendar_today</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Город</mat-label>
+          <input matInput formControlName="city" required>
+          <mat-icon matSuffix>location_city</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Дополнительная информация -->
+      <div class="form-section">
+        <h3 class="section-title">Дополнительно</h3>
+
+        <div class="grid-2">
+          <mat-form-field appearance="fill">
+            <mat-label>Тип события</mat-label>
+            <input matInput formControlName="type">
+            <mat-hint>Например: фестиваль, конференция, забег</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Вид события</mat-label>
+            <input matInput formControlName="kind">
+            <mat-hint>Например: культурное, спортивное, экологическое</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Адрес проведения</mat-label>
+          <input matInput formControlName="address">
+          <mat-icon matSuffix>place</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Организатор</mat-label>
+          <input matInput formControlName="organizer">
+          <mat-icon matSuffix>group</mat-icon>
+        </mat-form-field>
+
+        <div class="grid-2">
+          <mat-form-field appearance="fill">
+            <mat-label>Телефон контакта</mat-label>
+            <input matInput formControlName="contactPhone">
+            <mat-icon matSuffix>phone</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Email контакта</mat-label>
+            <input matInput type="email" formControlName="contactEmail">
+            <mat-icon matSuffix>email</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Сайт события</mat-label>
+          <input matInput formControlName="website">
+          <mat-icon matSuffix>language</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Ссылка на изображение (постер)</mat-label>
+          <input matInput formControlName="imageUrl">
+          <mat-icon matSuffix>image</mat-icon>
+          <mat-hint>URL на картинку</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- Кнопки -->
+      <div class="actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading">
+          <mat-icon *ngIf="loading" class="spinner-small">autorenew</mat-icon>
+          {{ isEdit ? 'Сохранить изменения' : 'Создать событие' }}
+        </button>
+        <button mat-button type="button" (click)="cancel()" [disabled]="loading">
+          Отмена
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

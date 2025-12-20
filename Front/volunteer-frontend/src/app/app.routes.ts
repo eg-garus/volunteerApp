@@ -4,7 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const appRoutes: Routes = [
   {
     path: '',
-    redirectTo: '/activities',
+    redirectTo: '/events',
     pathMatch: 'full'
   },
   {
@@ -12,13 +12,13 @@ export const appRoutes: Routes = [
     loadChildren: () => import('./features/auth/auth.routes').then(r => r.authRoutes)
   },
   {
-  path: 'profile',
-  loadComponent: () => import('./features/activities/profile/profile.component').then(c => c.ProfileComponent),
-  canActivate: [authGuard]
+    path: 'profile',
+    loadComponent: () => import('./features/profile/profile.component').then(c => c.ProfileComponent),
+    canActivate: [authGuard]
   },
   {
-    path: 'activities',
-    loadChildren: () => import('./features/activities/activities.routes').then(r => r.activitiesRoutes)
+    path: 'events/create',
+    loadComponent: () => import('./features/events/form/form.component').then(r => r.FormComponent)
   },
   {
     path: 'events',
@@ -30,6 +30,6 @@ export const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/activities'
+    redirectTo: '/events'
   }
 ];

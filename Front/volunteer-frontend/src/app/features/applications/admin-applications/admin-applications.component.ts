@@ -10,8 +10,9 @@ interface AdminApplication {
   id: number;
   userLogin: string;
   activityName: string;
+  eventName: string;
   comment?: string;
-  status: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
   submissionDate: string;
 }
 
@@ -23,7 +24,7 @@ interface AdminApplication {
   styleUrl: './admin-applications.component.scss'
 })
 export class AdminApplicationsComponent implements OnInit {
-  displayedColumns: string[] = ['userLogin', 'activityName', 'comment', 'submissionDate', 'status', 'actions'];
+  displayedColumns: string[] = ['userLogin', 'eventName', 'activityName', 'comment', 'submissionDate', 'status', 'actions'];
   dataSource: AdminApplication[] = [];
   loading = true;
 
@@ -35,16 +36,25 @@ export class AdminApplicationsComponent implements OnInit {
 
   loadAllApplications() {
     this.loading = true;
-    this.http.get<AdminApplication[]>(`${environment.apiUrl}/applications/all`).subscribe({
+    this.http.get<AdminApplication[]>(`${environment.apiUrl}/applications/admin/all`).subscribe({
       next: (apps) => {
         this.dataSource = apps;
         this.loading = false;
       },
-      error: (err) => {
-        console.error('Ошибка', err);
-        this.loading = false;
-      }
+      error: () => this.loading = false
     });
+  }
+
+  delete(id: number) {
+    if (confirm('Удалить заявку? Это действие необратимо.')) {
+      this.http.delete(`${environment.apiUrl}/applications/${id}`).subscribe({
+        next: () => {
+          alert('Заявка удалена');
+          this.loadAllApplications();
+        },
+        error: () => alert('Ошибка при удалении')
+      });
+    }
   }
 
   approve(id: number) {

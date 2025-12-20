@@ -20,6 +20,9 @@
       <span [style.color]="app.status === 'APPROVED' ? 'green' : app.status === 'REJECTED' ? 'red' : 'orange'">
         {{app.status}}
       </span>
+      <button mat-button color="warn" (click)="delete(app.id)" *ngIf="app.status === 'PENDING'" class="ml-10">
+      Отозвать заявку
+      </button>
     </td>
   </ng-container>
 

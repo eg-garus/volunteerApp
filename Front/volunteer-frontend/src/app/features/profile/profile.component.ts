@@ -5,9 +5,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
-import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../environments/environment';
+import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
+import { MatIcon } from "@angular/material/icon";
 
 interface UserProfile {
   id: number;
@@ -18,6 +19,7 @@ interface UserProfile {
   middleName?: string;
   phone?: string;
   birthYear?: number;
+  languages?: string;
 }
 
 @Component({
@@ -28,8 +30,9 @@ interface UserProfile {
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
-  ],
+    MatButtonModule,
+    MatIcon
+],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -40,8 +43,10 @@ export class ProfileComponent implements OnInit {
     lastName: ['', Validators.required],
     middleName: [''],
     phone: [''],
-    birthYear: [null as number | null]
+    birthYear: [null as number | null],
+    languages: ['']
     });
+loading: any;
 
   constructor(
     private fb: FormBuilder,
@@ -54,16 +59,30 @@ export class ProfileComponent implements OnInit {
     this.loadProfile();
   }
 
-    loadProfile() {
+  private loadProfile() {
+    this.loading = true;
+
     this.http.get<UserProfile>(`${environment.apiUrl}/profile`).subscribe({
-        next: (user) => {
+      next: (user) => {
         this.profileForm.patchValue({
-            ...user,
-            birthYear: user.birthYear ?? null  // ← на всякий случай
+          email: user.email || '',
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
+          middleName: user.middleName || '',
+          phone: user.phone || '',
+          birthYear: user.birthYear ?? null,           // если null или undefined — null
+          languages: user.languages || ''              // если null — пустая строка
         });
-        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Ошибка загрузки профиля:', err);
+        alert('Не удалось загрузить данные профиля. Попробуйте позже.');
+      }
     });
-    }
+  }
 
   onSubmit() {
     if (this.profileForm.invalid) return;

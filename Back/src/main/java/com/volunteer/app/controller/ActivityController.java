@@ -1,15 +1,22 @@
 package com.volunteer.app.controller;
 
-import com.volunteer.app.entity.Activity;
-import com.volunteer.app.service.ActivityService;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.volunteer.app.dto.CreateActivityRequest;
+import com.volunteer.app.entity.Activity;
+import com.volunteer.app.service.ActivityService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/activities")
@@ -20,34 +27,23 @@ public class ActivityController {
     public ActivityController(ActivityService activityService) {
         this.activityService = activityService;
     }
-
-    // Новый метод — возвращает простой список (для фронтенда)
-    @GetMapping
-    public ResponseEntity<List<Activity>> getAll() {
-        return ResponseEntity.ok(activityService.findAllList());
-    }
-
-    // Если хочешь оставить пагинацию — сделай отдельный эндпоинт
-    // @GetMapping("/paged")
-    // public ResponseEntity<Page<Activity>> getAllPaged(Pageable pageable) {
-    //     return ResponseEntity.ok(activityService.findAll(pageable));
-    // }
-
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")  // или permitAll, если волонтёры тоже могут видеть
     public ResponseEntity<Activity> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(activityService.findById(id));
+        Activity activity = activityService.findById(id);
+        return ResponseEntity.ok(activity);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Activity> create(@Valid @RequestBody Activity activity) {
-        return ResponseEntity.ok(activityService.create(activity));
+    public Activity create(@Valid @RequestBody Activity activity, @RequestParam("eventId") Long eventId) {
+        return activityService.create(activity, eventId);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Activity> update(@PathVariable Long id, @Valid @RequestBody Activity activity) {
-        return ResponseEntity.ok(activityService.update(id, activity));
+    public Activity update(@PathVariable Long id, @RequestBody Activity activity) {
+        return activityService.update(id, activity);
     }
 
     @DeleteMapping("/{id}")
@@ -55,14 +51,5 @@ public class ActivityController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         activityService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Activity>> search(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String afterDate) {
-        // afterDate можно парсить в LocalDateTime, если нужно
-        return ResponseEntity.ok(activityService.search(name, city, null, null));
     }
 }

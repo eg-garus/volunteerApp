@@ -1,50 +1,51 @@
 package com.volunteer.app.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Data
-@Table(name = "events")
-public class Event {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Entity
+@Table(name = "events")
+@Data
+public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Название события обязательно")
-    @Size(min = 5, max = 30, message = "Название должно быть от 5 до 30 символов")
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String name;
 
-    // Тип события (можно связать с отдельной сущностью ActivityType, если нужно)
-    private String type;
-
-    // Вид события (аналогично)
-    private String kind;
-
-    // Дата и время начала события
-    @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
-
-    // Дата и время окончания события (опционально)
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
-
-    // Описание события
+    @Column(length = 1000)
     private String description;
 
-    // Связь многие-ко-многим с мероприятиями (Activity)
-    @ManyToMany
-    @JoinTable(
-        name = "event_activity",
-        joinColumns = @JoinColumn(name = "event_id"),
-        inverseJoinColumns = @JoinColumn(name = "activity_id")
-    )
-    private List<Activity> activities;
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    private String kind;  // вид: культурное, спортивное, благотворительное и т.д.
+
+    private String type;  // тип: фестиваль, концерт, субботник и т.д.
+
+    private String city;
+
+    private String address;
+
+    private String organizer;
+
+    private String contactPhone;
+
+    private String contactEmail;
+
+    private String website;
+
+    private String imageUrl;  // ссылка на фото/постер
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Activity> activities = new ArrayList<>();
 }

@@ -1,0 +1,64 @@
+<div class="page-container">
+  <div class="card">
+    <h2 class="profile-title">Мой профиль</h2>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <!-- Логин — только просмотр -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Логин</mat-label>
+        <input matInput [value]="(authService.currentUser$ | async)?.login || '—'" disabled>
+      </mat-form-field>
+
+      <!-- Роль — только просмотр -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Роль</mat-label>
+        <input matInput [value]="(authService.currentUser$ | async)?.role === 'ADMIN' ? 'Администратор' : 'Волонтёр'" disabled>
+      </mat-form-field>
+
+      <!-- Редактируемые поля -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" required>
+        <mat-hint>Используется для входа</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Имя</mat-label>
+        <input matInput formControlName="firstName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Фамилия</mat-label>
+        <input matInput formControlName="lastName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Отчество</mat-label>
+        <input matInput formControlName="middleName">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Телефон</mat-label>
+        <input matInput formControlName="phone">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Год рождения</mat-label>
+        <input matInput type="number" formControlName="birthYear" placeholder="Например: 1995">
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Языки</mat-label>
+        <input matInput formControlName="languages" placeholder="Русский, Английский, Немецкий">
+        <mat-hint>Через запятую</mat-hint>
+      </mat-form-field>
+
+      <div class="actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || loading">
+          <mat-icon *ngIf="loading" class="spinner-small">autorenew</mat-icon>
+          Сохранить изменения
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
