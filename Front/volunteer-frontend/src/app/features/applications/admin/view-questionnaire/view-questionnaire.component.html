@@ -1,0 +1,55 @@
+<div class="dialog-container">
+  <h2>Анкета пользователя</h2>
+
+  <div *ngIf="data.questionnaire; else noQuestionnaire">
+    <h3>3. Образование и занятость</h3>
+    <p><strong>Образование:</strong> {{ data.questionnaire.education || 'Не указано' }}</p>
+    <p><strong>Место учёбы/работы:</strong> {{ data.questionnaire.workplaceOrStudy || 'Не указано' }}</p>
+    <p><strong>Иностранные языки:</strong> {{ data.questionnaire.foreignLanguages || 'Не указано' }}</p>
+
+    <h3>4. Опыт волонтёрства</h3>
+    <p><strong>Есть опыт:</strong> {{ data.questionnaire.hasVolunteerExperience ? 'Да' : 'Нет' }}</p>
+    <p *ngIf="data.questionnaire.hasVolunteerExperience">
+      <strong>Организация:</strong> {{ data.questionnaire.volunteerOrganization || 'Не указано' }}<br>
+      <strong>Период:</strong> {{ data.questionnaire.volunteerPeriod || 'Не указано' }}<br>
+      <strong>Обязанности:</strong> {{ data.questionnaire.volunteerResponsibilities || 'Не указано' }}
+    </p>
+
+    <h3>5. Мотивация</h3>
+    <p><strong>Почему стали волонтёром:</strong> {{ data.questionnaire.motivationWhy || 'Не указано' }}</p>
+    <p><strong>Привлекает:</strong> {{ data.questionnaire.motivationAttracts?.join(', ') || 'Не указано' }}</p>
+
+    <h3>6. Направления</h3>
+    <p>{{ data.questionnaire.volunteerDirections?.join(', ') || 'Не указано' }}</p>
+
+    <h3>7. Навыки</h3>
+    <p><strong>Профессиональные навыки:</strong> {{ data.questionnaire.professionalSkills || 'Не указано' }}</p>
+    <p><strong>Хобби:</strong> {{ data.questionnaire.hobbies || 'Не указано' }}</p>
+    <p><strong>Компьютерные навыки:</strong> {{ data.questionnaire.computerSkills || 'Не указано' }}</p>
+    <p><strong>Автомобиль:</strong> {{ data.questionnaire.hasCar ? 'Да (' + (data.questionnaire.drivingLicenseCategory || 'не указана категория') + ')' : 'Нет' }}</p>
+
+    <h3>8. Готовность</h3>
+    <p><strong>Часов в месяц:</strong> {{ data.questionnaire.hoursPerMonth || 'Не указано' }}</p>
+    <p><strong>Удобные дни:</strong> {{ data.questionnaire.convenientDays || 'Не указано' }}</p>
+    <p><strong>Удобное время:</strong> {{ data.questionnaire.convenientTime?.join(', ') || 'Не указано' }}</p>
+
+    <h3>9. Личностные качества</h3>
+    <p><strong>Ответственность:</strong> {{ data.questionnaire.responsibility || 'Не указано' }}/10</p>
+    <p><strong>Коммуникабельность:</strong> {{ data.questionnaire.communication || 'Не указано' }}/10</p>
+    <p><strong>Стрессоустойчивость:</strong> {{ data.questionnaire.stressResistance || 'Не указано' }}/10</p>
+    <p><strong>Конфликтность:</strong> {{ data.questionnaire.conflictLevel || 'Не указано' }}/10</p>
+
+    <h3>10. Дополнительно</h3>
+    <p><strong>Свободное время:</strong> {{ data.questionnaire.freeTime || 'Не указано' }}</p>
+    <p><strong>Жизненный девиз:</strong> {{ data.questionnaire.lifeMotto || 'Не указано' }}</p>
+    <p><strong>Комментарии:</strong> {{ data.questionnaire.additionalComments || 'Не указано' }}</p>
+  </div>
+
+  <ng-template #noQuestionnaire>
+    <p>Анкета не заполнена пользователем.</p>
+  </ng-template>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="close()">Закрыть</button>
+  </mat-dialog-actions>
+</div>

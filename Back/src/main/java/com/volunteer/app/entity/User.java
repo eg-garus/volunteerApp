@@ -1,8 +1,22 @@
 package com.volunteer.app.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import java.time.LocalDate;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -19,12 +33,10 @@ public class User {
     @NotBlank
     private String email;
 
-    @NotBlank
-    @Size(min = 4, max = 30)
+    @Size(max = 30)
     private String lastName;
 
-    @NotBlank
-    @Size(min = 4, max = 30)
+    @Size(max = 30)
     private String firstName;
 
     @Size(max = 30)
@@ -42,6 +54,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role = Role.VOLUNTEER;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Questionnaire questionnaire;
 
     // ГЕТТЕРЫ И СЕТТЕРЫ (добавляем вручную)
     public Long getId() {

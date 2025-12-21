@@ -74,7 +74,7 @@ export class ActivityFormComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        alert('Ошибка загрузки задачи');
+        alert('Ошибка загрузки мероприятия');
       }
     });
   }
@@ -111,13 +111,13 @@ export class ActivityFormComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.loading = false;
-        alert(this.isEdit ? 'Задача обновлена!' : 'Задача создана!');
+        alert(this.isEdit ? 'Мероприятие обновлено!' : 'Мероприятие создано!');
         this.router.navigate(['/events', this.eventId]);
       },
       error: (err) => {
         this.loading = false;
         console.error(err);
-        alert(err.error?.message || 'Ошибка при сохранении задачи');
+        alert(err.error?.message || 'Ошибка при сохранении мероприятия');
       }
     });
   }

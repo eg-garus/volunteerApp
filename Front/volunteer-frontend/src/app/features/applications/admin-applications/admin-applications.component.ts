@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { Questionnaire } from '../../model/questionnaire.model';
+import { ViewQuestionnaireComponent } from '../admin/view-questionnaire/view-questionnaire.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 interface AdminApplication {
   id: number;
@@ -14,12 +17,13 @@ interface AdminApplication {
   comment?: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   submissionDate: string;
+  userId: number;
 }
 
 @Component({
   selector: 'app-admin-applications',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule, MatDialogModule],
   templateUrl: './admin-applications.component.html',
   styleUrl: './admin-applications.component.scss'
 })
@@ -27,6 +31,7 @@ export class AdminApplicationsComponent implements OnInit {
   displayedColumns: string[] = ['userLogin', 'eventName', 'activityName', 'comment', 'submissionDate', 'status', 'actions'];
   dataSource: AdminApplication[] = [];
   loading = true;
+  private dialog = inject(MatDialog);
 
   constructor(private http: HttpClient) {}
 
@@ -55,6 +60,19 @@ export class AdminApplicationsComponent implements OnInit {
         error: () => alert('Ошибка при удалении')
       });
     }
+  }
+  viewQuestionnaire(userId: number) {
+    this.http.get<Questionnaire>(`${environment.apiUrl}/questionnaires/user/${userId}`).subscribe({
+      next: (questionnaire) => {
+        this.dialog.open(ViewQuestionnaireComponent, {
+          width: '800px',
+          data: { questionnaire }
+        });
+      },
+      error: () => {
+        alert('Анкета не найдена или ошибка загрузки');
+      }
+    });
   }
 
   approve(id: number) {

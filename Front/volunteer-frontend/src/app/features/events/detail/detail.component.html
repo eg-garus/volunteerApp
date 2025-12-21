@@ -13,8 +13,8 @@
         <p><strong>Телефон:</strong> {{ event.contactPhone || 'Не указан' }}</p>
         <p><strong>Email:</strong> {{ event.contactEmail || 'Не указан' }}</p>
         <p *ngIf="event.website"><strong>Сайт:</strong> <a [href]="event.website" target="_blank">{{ event.website }}</a></p>
-        <p><strong>Дата начала:</strong> {{ event.startDate | date:'fullDate' }}</p>
-        <p><strong>Дата окончания:</strong> {{ event.endDate | date:'fullDate' }}</p>
+        <p><strong>Дата начала:</strong> {{ event.startDate |date:'dd.MM.yyyy HH:mm' }}</p>
+        <p><strong>Дата окончания:</strong> {{ event.endDate | date:'dd.MM.yyyy HH:mm' }}</p>
         <p><strong>Тип:</strong> {{ event.type || 'Не указан' }}</p>
         <p><strong>Вид:</strong> {{ event.kind || 'Не указан' }}</p>
       </div>
@@ -22,7 +22,7 @@
       <!-- Кнопки управления событием для админа -->
       <div class="actions mb-30" *ngIf="authService.isAdmin()">
         <button mat-raised-button color="accent" [routerLink]="['/events', event.id, 'activities', 'create']">
-          Добавить задачу
+          Добавить мероприятие
         </button>
         <button mat-raised-button color="primary" [routerLink]="['/events', event.id, 'edit']" class="ml-10">
           Редактировать событие
@@ -32,14 +32,14 @@
         </button>
       </div>
 
-      <h3 class="section-title">Задачи в рамках события</h3>
+      <h3 class="section-title">мероприятия в рамках события</h3>
 
       <div class="activities-list" *ngIf="activities.length > 0">
         <mat-card class="activity-card" *ngFor="let activity of activities">
           <mat-card-header>
             <mat-card-title>{{ activity.name }}</mat-card-title>
             <mat-card-subtitle>
-              {{ activity.date | date:'short' }} • Нужно: {{ activity.requiredVolunteers }} чел.
+              {{ activity.date | date:'dd.MM.yyyy HH:mm' }} • Нужно: {{ activity.requiredVolunteers }} чел.
             </mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
@@ -48,15 +48,27 @@
             <p><strong>Город:</strong> {{ activity.city }}</p>
           </mat-card-content>
           <mat-card-actions align="end">
-            <button mat-raised-button color="primary" (click)="applyForActivity(activity.id)" *ngIf="authService.isLoggedIn()">
+            <!-- Кнопка "Подать заявку" только если дата задачи в будущем или сегодня -->
+            <button mat-raised-button color="primary"
+                    (click)="applyForActivity(activity.id)"
+                    *ngIf="authService.isLoggedIn() && isActivityActive(activity.date)">
               Подать заявку
             </button>
 
-            <!-- Кнопки редактирования и удаления задачи — только для админа -->
-            <button mat-raised-button color="primary" (click)="editActivity(activity.id)" *ngIf="authService.isAdmin()" class="ml-10">
+            <!-- Если дата истекла — показываем сообщение вместо кнопки -->
+            <span class="expired-message" *ngIf="authService.isLoggedIn() && !isActivityActive(activity.date)">
+              Заявки закрыты (мероприятие прошло)
+            </span>
+
+            <!-- Кнопки редактирования и удаления — только для админа -->
+            <button mat-raised-button color="primary"
+                    (click)="editActivity(activity.id)"
+                    *ngIf="authService.isAdmin()" class="ml-10">
               Редактировать
             </button>
-            <button mat-raised-button color="warn" (click)="deleteActivity(activity.id)" *ngIf="authService.isAdmin()" class="ml-10">
+            <button mat-raised-button color="warn"
+                    (click)="deleteActivity(activity.id)"
+                    *ngIf="authService.isAdmin()" class="ml-10">
               Удалить
             </button>
           </mat-card-actions>
@@ -64,7 +76,7 @@
       </div>
 
       <p class="no-data" *ngIf="activities.length === 0">
-        Задач пока нет.
+        Мероприятий пока нет.
       </p>
     </div>
 

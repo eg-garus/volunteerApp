@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="content">
-    <h2 class="title">Ближайшие события</h2>
+    <h2 class="title">События</h2>
 
     <div class="header-actions" *ngIf="authService.isAdmin()">
       <button mat-raised-button color="accent" (click)="goToCreate()">
@@ -11,7 +11,7 @@
 
     <!-- Блок фильтров -->
     <div class="filters" *ngIf="!loading && events.length > 0">
-      <mat-form-field appearance="fill">
+      <mat-form-field class="input_title" appearance="fill">
         <mat-label>Поиск по названию</mat-label>
         <input matInput [(ngModel)]="searchText" (input)="applyFilter()" placeholder="Введите название">
       </mat-form-field>
@@ -47,36 +47,70 @@
 
     <mat-progress-spinner *ngIf="loading" mode="indeterminate" class="spinner"></mat-progress-spinner>
 
-    <div class="events-grid" *ngIf="!loading && filteredEvents.length > 0">
-      <mat-card class="event-card" *ngFor="let event of filteredEvents" (click)="goToEvent(event.id)">
-        <mat-card-header>
-          <mat-card-title>{{ event.name }}</mat-card-title>
-          <mat-card-subtitle>
-            {{ event.city }} • {{ event.startDate | date:'mediumDate' }}
-          </mat-card-subtitle>
-        </mat-card-header>
+      <div class="section-divider" *ngIf="upcomingEvents.length > 0 && pastEvents.length > 0">
+        <hr>
+        <span class="divider-text">Ближайшие события</span>
+      </div>
 
-        <img mat-card-image [src]="event.imageUrl || 'assets/placeholder-event.jpg'" alt="{{ event.name }}" *ngIf="event.imageUrl">
+    <!-- Ближайшие события -->
+    <div *ngIf="!loading">
+      <div class="events-grid" *ngIf="upcomingEvents.length > 0">
+        <mat-card class="event-card" *ngFor="let event of upcomingEvents" (click)="goToEvent(event.id)">
+          <mat-card-header>
+            <mat-card-title>{{ event.name }}</mat-card-title>
+            <mat-card-subtitle>
+              {{ event.city }} • {{ event.startDate | date:'mediumDate' }}
+            </mat-card-subtitle>
+          </mat-card-header>
 
-        <mat-card-content>
-          <p class="description">{{ event.description }}</p>
-          <p><strong>Тип:</strong> {{ event.type || 'Не указан' }}</p>
-          <p><strong>Вид:</strong> {{ event.kind || 'Не указан' }}</p>
-          <p><strong>Дата:</strong> {{ event.startDate | date:'shortDate' }} — {{ event.endDate | date:'shortDate' }}</p>
-        </mat-card-content>
+          <img mat-card-image [src]="event.imageUrl || 'assets/placeholder-event.jpg'" alt="{{ event.name }}" *ngIf="event.imageUrl">
 
-        <mat-card-actions>
-          <button mat-button color="primary">Подробнее</button>
-        </mat-card-actions>
-      </mat-card>
+          <mat-card-content>
+            <p class="description">{{ event.description }}</p>
+            <p><strong>Тип:</strong> {{ event.type || 'Не указан' }}</p>
+            <p><strong>Вид:</strong> {{ event.kind || 'Не указан' }}</p>
+            <p><strong>Дата:</strong> {{ event.startDate | date:'dd.MM.yyyy HH:mm' }} — {{ event.endDate | date:'dd.MM.yyyy HH:mm' }}</p>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-button color="primary">Подробнее</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <div class="section-divider" *ngIf="upcomingEvents.length > 0 && pastEvents.length > 0">
+        <hr>
+        <span class="divider-text">Архивные события</span>
+      </div>
+
+      <!-- Архивные события -->
+      <div class="events-grid" *ngIf="pastEvents.length > 0">
+        <mat-card class="event-card" *ngFor="let event of pastEvents" (click)="goToEvent(event.id)">
+          <mat-card-header>
+            <mat-card-title>{{ event.name }}</mat-card-title>
+            <mat-card-subtitle>
+              {{ event.city }} • {{ event.startDate | date:'mediumDate' }}
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <img mat-card-image [src]="event.imageUrl || 'assets/placeholder-event.jpg'" alt="{{ event.name }}" *ngIf="event.imageUrl">
+
+          <mat-card-content>
+            <p class="description">{{ event.description }}</p>
+            <p><strong>Тип:</strong> {{ event.type || 'Не указан' }}</p>
+            <p><strong>Вид:</strong> {{ event.kind || 'Не указан' }}</p>
+            <p><strong>Дата:</strong> {{ event.startDate | date:'dd.MM.yyyy HH:mm' }} — {{ event.endDate | date:'dd.MM.yyyy HH:mm' }}</p>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-button color="primary">Подробнее</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <p class="empty-text" *ngIf="events.length === 0">
+        Событий пока нет.
+      </p>
     </div>
-
-    <p class="empty-text" *ngIf="!loading && filteredEvents.length === 0">
-      Событий по выбранным фильтрам не найдено.
-    </p>
-
-    <p class="empty-text" *ngIf="!loading && events.length === 0">
-      Событий пока нет.
-    </p>
   </div>
 </div>

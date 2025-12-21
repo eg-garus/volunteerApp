@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class SubmitApplicationRequest {
-    @NotNull(message = "ID задачи обязателен")
+    @NotNull(message = "ID мероприятия обязательно")
     private Long activityId;
 
     private String comment;

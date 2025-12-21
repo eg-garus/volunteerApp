@@ -7,7 +7,7 @@
 
   <ng-container *ngIf="authService.isLoggedIn(); else guest">
     <button mat-button routerLink="/applications/my">Мои заявки</button>
-    <button mat-button *ngIf="authService.isAdmin()" routerLink="/applications/admin">Админка заявок</button>
+    <button mat-button *ngIf="authService.isAdmin()" routerLink="/applications/admin">Заявки волонтеров</button>
     <button mat-button (click)="logout()">Выйти</button>
   </ng-container>
 

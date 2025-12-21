@@ -17,6 +17,11 @@ export const appRoutes: Routes = [
     canActivate: [authGuard]
   },
   {
+  path: 'questionnaire',
+  loadComponent: () => import('./features/questionnaire/questionnaire-form/questionnaire-form.component').then(c => c.QuestionnaireFormComponent),
+  canActivate: [authGuard]
+  },
+  {
     path: 'events/create',
     loadComponent: () => import('./features/events/form/form.component').then(r => r.FormComponent)
   },

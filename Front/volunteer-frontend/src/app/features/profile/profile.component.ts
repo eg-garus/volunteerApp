@@ -96,4 +96,8 @@ loading: any;
       }
     });
   }
+
+  onQuestionnaire() {
+    this.router.navigate(['/questionnaire']);
+  }
 }

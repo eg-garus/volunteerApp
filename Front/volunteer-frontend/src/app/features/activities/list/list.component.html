@@ -11,7 +11,7 @@
 
   <ng-container matColumnDef="date">
     <th mat-header-cell *matHeaderCellDef> Дата </th>
-    <td mat-cell *matCellDef="let activity"> {{activity.date | date:'short'}} </td>
+    <td mat-cell *matCellDef="let activity"> {{activity.date | date:'dd MMMM yyyy, HH:mm' }} </td>
   </ng-container>
 
   <ng-container matColumnDef="city">

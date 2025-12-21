@@ -40,6 +40,7 @@ public class ApplicationService {
         dto.setComment(app.getComment());
         dto.setStatus(app.getStatus());
         dto.setSubmissionDate(app.getSubmissionDate());
+        dto.setUserId(app.getUser().getId());
         return dto;
     }).toList();
 }
