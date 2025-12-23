@@ -64,7 +64,7 @@ public class ApplicationController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or principal.username == #userLogin")  // админ или владелец заявки
+    // @PreAuthorize("hasRole('ADMIN') or principal.username == #userLogin")  // админ или владелец заявки
     public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
     String userLogin = userDetails.getUser().getLogin();
     applicationService.delete(id, userLogin);  // сервис проверит права

@@ -1,15 +1,16 @@
 package com.volunteer.app.service;
 
+import java.util.Optional;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.volunteer.app.entity.Questionnaire;
 import com.volunteer.app.entity.User;
 import com.volunteer.app.repository.QuestionnaireRepository;
 
-import jakarta.transaction.Transactional;
-
 @Service
-@Transactional
 public class QuestionnaireService {
 
     private final QuestionnaireRepository questionnaireRepository;
@@ -18,18 +19,30 @@ public class QuestionnaireService {
         this.questionnaireRepository = questionnaireRepository;
     }
 
+    @Transactional(readOnly = true)
     public Questionnaire getByUser(User user) {
         return questionnaireRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Анкета не найдена"));
+                .orElse(null);
     }
 
     public Questionnaire getByUserId(Long userId) {
         return questionnaireRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Анкета не найдена"));
+                .orElse(null);
     }
 
+    @Transactional
     public Questionnaire saveForUser(User user, Questionnaire questionnaire) {
-        questionnaire.setUser(user);
-        return questionnaireRepository.save(questionnaire);
+        Optional<Questionnaire> existingOpt = questionnaireRepository.findByUser(user);
+
+        if (existingOpt.isPresent()) {
+            Questionnaire existing = existingOpt.get();
+
+            BeanUtils.copyProperties(questionnaire, existing, "id", "user");
+
+            return questionnaireRepository.save(existing);
+        } else {
+            questionnaire.setUser(user);
+            return questionnaireRepository.save(questionnaire);
+        }
     }
 }

@@ -73,3 +73,21 @@ strong {
 mat-card-actions {
   margin-top: 20px;
 }
+
+.revoke-btn {
+  margin-left: 16px; /* расстояние от статуса */
+  font-size: 0.9rem;
+  padding: 6px 16px;
+  border-radius: 8px;
+  text-transform: none; /* убираем uppercase */
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4); /* мягкая тень красного цвета */
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

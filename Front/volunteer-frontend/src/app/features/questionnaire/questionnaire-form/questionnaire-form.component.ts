@@ -5,7 +5,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -22,7 +21,6 @@ import { Questionnaire } from '../../model/questionnaire.model';
     MatInputModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatSelectModule,
     MatProgressSpinnerModule
   ],
   templateUrl: './questionnaire-form.component.html',
@@ -37,6 +35,7 @@ export class QuestionnaireFormComponent implements OnInit {
     education: [''],
     workplaceOrStudy: [''],
     foreignLanguages: [''],
+    birthYear: [null, [Validators.min(1900), Validators.max(new Date().getFullYear())]],
 
     hasVolunteerExperience: [false],
     volunteerOrganization: [''],
@@ -44,9 +43,9 @@ export class QuestionnaireFormComponent implements OnInit {
     volunteerResponsibilities: [''],
 
     motivationWhy: [''],
-    motivationAttracts: [[] as string[]],
+    motivationAttracts: [''],  // Теперь строка
 
-    volunteerDirections: [[] as string[]],
+    volunteerDirections: [''],  // Теперь строка
 
     professionalSkills: [''],
     hobbies: [''],
@@ -56,7 +55,7 @@ export class QuestionnaireFormComponent implements OnInit {
 
     hoursPerMonth: [null, [Validators.min(0)]],
     convenientDays: [''],
-    convenientTime: [[] as string[]],
+    convenientTime: [''],  // Теперь строка
 
     responsibility: [null, [Validators.min(1), Validators.max(10)]],
     communication: [null, [Validators.min(1), Validators.max(10)]],
@@ -71,29 +70,6 @@ export class QuestionnaireFormComponent implements OnInit {
   loading = true;
   saved = false;
 
-  // Списки для множественного выбора
-  motivationOptions = [
-    'Получение нового опыта',
-    'Встречи с новыми людьми',
-    'Возможность помочь другим',
-    'Вклад в общее дело',
-    'Новые интересы',
-    'Открытие для себя новых сфер'
-  ];
-
-  directionOptions = [
-    'Помощь детям-сиротам',
-    'Поддержка больных детей',
-    'Работа с пожилыми людьми',
-    'Помощь бездомным',
-    'Поддержка людей с инвалидностью',
-    'Экологические проекты',
-    'Культурные и творческие инициативы',
-    'Зооволонтёрство (помощь приютам для животных)'
-  ];
-
-  timeOptions = ['Утро', 'День', 'Вечер'];
-
   ngOnInit(): void {
     this.loadQuestionnaire();
   }
@@ -102,23 +78,25 @@ export class QuestionnaireFormComponent implements OnInit {
     this.loading = true;
     this.http.get<Questionnaire>(`${environment.apiUrl}/questionnaires/me`).subscribe({
       next: (data) => {
-        this.form.patchValue(data as any);  // ← вот так, игнорируем строгую типизацию
+        this.form.patchValue(data as any);
         this.loading = false;
       },
       error: () => {
-        this.loading = false; // если анкеты нет — оставляем форму пустой
+        this.loading = false; // если анкеты нет — форма пустая
       }
     });
   }
 
   onSubmit() {
     if (this.form.invalid) {
-      alert('Заполните обязательные поля');
+      alert('Заполните все поля');
       return;
     }
 
     this.loading = true;
-    this.http.post<Questionnaire>(`${environment.apiUrl}/questionnaires/me`, this.form.value).subscribe({
+    this.http.post<Questionnaire>(`${environment.apiUrl}/questionnaires/me`, this.form.value, {
+      headers: { 'Content-Type': 'application/json' }
+    }).subscribe({
       next: () => {
         this.saved = true;
         this.loading = false;
@@ -126,41 +104,9 @@ export class QuestionnaireFormComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        alert(err.error?.message || 'Ошибка сохранения анкеты');
+        console.error(err);
+        alert('Ошибка: ' + (err.error?.message || 'Неизвестная ошибка'));
       }
     });
-  }
-
-  onMotivationChange(event: any) {
-    const attracts = (this.form.get('motivationAttracts')?.value || []) as string[];
-    if (event.checked) {
-      attracts.push(event.source.value);
-    } else {
-      const index = attracts.indexOf(event.source.value);
-      if (index > -1) attracts.splice(index, 1);
-    }
-    this.form.get('motivationAttracts')?.setValue(attracts);
-  }
-
-  onDirectionChange(event: any) {
-    const directions = (this.form.get('volunteerDirections')?.value || []) as string[];
-    if (event.checked) {
-      directions.push(event.source.value);
-    } else {
-      const index = directions.indexOf(event.source.value);
-      if (index > -1) directions.splice(index, 1);
-    }
-    this.form.get('volunteerDirections')?.setValue(directions);
-  }
-
-  onTimeChange(event: any) {
-    const time = (this.form.get('convenientTime')?.value || []) as string[];
-    if (event.checked) {
-      time.push(event.source.value);
-    } else {
-      const index = time.indexOf(event.source.value);
-      if (index > -1) time.splice(index, 1);
-    }
-    this.form.get('convenientTime')?.setValue(time);
   }
 }

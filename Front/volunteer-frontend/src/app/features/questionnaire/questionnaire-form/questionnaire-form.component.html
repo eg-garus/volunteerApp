@@ -5,7 +5,7 @@
     <mat-progress-spinner *ngIf="loading" mode="indeterminate" class="spinner"></mat-progress-spinner>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!loading">
-      <!-- 3. Образование и занятость -->
+      <!-- 1. Образование и занятость -->
       <h3>1. Образование и занятость</h3>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Образование</mat-label>
@@ -19,10 +19,15 @@
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Владение иностранными языками (укажите уровень)</mat-label>
-        <input matInput formControlName="foreignLanguages">
+        <input matInput formControlName="foreignLanguages" placeholder="Например: Английский (B2), Немецкий (A1)">
       </mat-form-field>
 
-      <!-- 4. Опыт волонтёрской деятельности -->
+      <mat-form-field appearance="fill">
+        <mat-label>Год рождения</mat-label>
+        <input matInput type="number" formControlName="birthYear" placeholder="Например, 1995">
+      </mat-form-field>
+
+      <!-- 2. Опыт волонтёрской деятельности -->
       <h3>2. Опыт волонтёрской деятельности</h3>
       <mat-checkbox formControlName="hasVolunteerExperience">Есть ли опыт волонтёрства?</mat-checkbox>
 
@@ -43,26 +48,26 @@
         </mat-form-field>
       </div>
 
-      <!-- 5. Мотивация и интересы -->
+      <!-- 3. Мотивация и интересы -->
       <h3>3. Мотивация и интересы</h3>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Почему вы решили стать волонтёром?</mat-label>
         <textarea matInput formControlName="motivationWhy" rows="3"></textarea>
       </mat-form-field>
 
-      <mat-label>Что именно привлекает вас в волонтёрской деятельности?</mat-label>
-      <mat-checkbox *ngFor="let option of motivationOptions" [value]="option" (change)="onMotivationChange($event)">
-        {{ option }}
-      </mat-checkbox>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Что именно привлекает вас в волонтёрской деятельности?</mat-label>
+        <textarea matInput formControlName="motivationAttracts" rows="3" placeholder="Например: Получение нового опыта, Встречи с новыми людьми, Помощь другим..."></textarea>
+      </mat-form-field>
 
-      <!-- 6. Направления деятельности -->
+      <!-- 4. Направления деятельности -->
       <h3>4. Направления деятельности</h3>
-      <mat-label>Какие сферы волонтёрства вам интересны?</mat-label>
-      <mat-checkbox *ngFor="let dir of directionOptions" [value]="dir" (change)="onDirectionChange($event)">
-        {{ dir }}
-      </mat-checkbox>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Какие сферы волонтёрства вам интересны?</mat-label>
+        <textarea matInput formControlName="volunteerDirections" rows="3" placeholder="Например: Помощь детям-сиротам, Экологические проекты, Зооволонтёрство..."></textarea>
+      </mat-form-field>
 
-      <!-- 7. Навыки и умения -->
+      <!-- 5. Навыки и умения -->
       <h3>5. Навыки и умения</h3>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Профессиональные навыки</mat-label>
@@ -85,7 +90,7 @@
         <input matInput formControlName="drivingLicenseCategory">
       </mat-form-field>
 
-      <!-- 8. Готовность к участию -->
+      <!-- 6. Готовность к участию -->
       <h3>6. Готовность к участию</h3>
       <mat-form-field appearance="fill">
         <mat-label>Сколько часов в месяц можете уделять?</mat-label>
@@ -94,15 +99,15 @@
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Удобные дни недели</mat-label>
-        <input matInput formControlName="convenientDays" placeholder="Пн, Ср, Сб и т.д.">
+        <input matInput formControlName="convenientDays" placeholder="Например: Пн, Ср, Сб">
       </mat-form-field>
 
-      <mat-label>Удобное время суток</mat-label>
-      <mat-checkbox *ngFor="let time of timeOptions" [value]="time" (change)="onTimeChange($event)">
-        {{ time }}
-      </mat-checkbox>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Удобное время суток</mat-label>
+        <input matInput formControlName="convenientTime" placeholder="Например: Утро, День, Вечер">
+      </mat-form-field>
 
-      <!-- 9. Личностные качества -->
+      <!-- 7. Личностные качества -->
       <h3>7. Личностные качества (оцените от 1 до 10)</h3>
       <mat-form-field appearance="fill">
         <mat-label>Ответственность</mat-label>
@@ -124,7 +129,7 @@
         <input matInput type="number" formControlName="conflictLevel" min="1" max="10">
       </mat-form-field>
 
-      <!-- 10. Дополнительные сведения -->
+      <!-- 8. Дополнительные сведения -->
       <h3>8. Дополнительные сведения</h3>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Как предпочитаете проводить свободное время?</mat-label>

@@ -1,0 +1,65 @@
+<div class="container">
+  <mat-card *ngIf="questionnaire && !loading">
+    <mat-card-title>Анкета пользователя (ID: {{userId}})</mat-card-title>
+    <mat-card-content>
+      <!-- 1. Образование и занятость -->
+      <h3>1. Образование и занятость</h3>
+      <p><strong>Образование:</strong> {{questionnaire.education || '—'}}</p>
+      <p><strong>Место учёбы/работы:</strong> {{questionnaire.workplaceOrStudy || '—'}}</p>
+      <p><strong>Владение иностранными языками:</strong> {{questionnaire.foreignLanguages || '—'}}</p>
+      <p><strong>Год рождения:</strong> {{questionnaire.birthYear || '—'}}</p>
+
+      <!-- 2. Опыт волонтёрской деятельности -->
+      <h3>2. Опыт волонтёрской деятельности</h3>
+      <p><strong>Есть опыт:</strong> {{questionnaire.hasVolunteerExperience ? 'Да' : 'Нет'}}</p>
+      <div *ngIf="questionnaire.hasVolunteerExperience">
+        <p><strong>Название организации/проекта:</strong> {{questionnaire.volunteerOrganization || '—'}}</p>
+        <p><strong>Период участия:</strong> {{questionnaire.volunteerPeriod || '—'}}</p>
+        <p><strong>Обязанности и достижения:</strong> {{questionnaire.volunteerResponsibilities || '—'}}</p>
+      </div>
+
+      <!-- 3. Мотивация и интересы -->
+      <h3>3. Мотивация и интересы</h3>
+      <p><strong>Почему решили стать волонтёром:</strong> {{questionnaire.motivationWhy || '—'}}</p>
+      <p><strong>Что привлекает:</strong> {{questionnaire.motivationAttracts || '—'}}</p>
+
+      <!-- 4. Направления деятельности -->
+      <h3>4. Направления деятельности</h3>
+      <p><strong>Интересные направления:</strong> {{questionnaire.volunteerDirections || '—'}}</p>
+
+      <!-- 5. Навыки и умения -->
+      <h3>5. Навыки и умения</h3>
+      <p><strong>Профессиональные навыки:</strong> {{questionnaire.professionalSkills || '—'}}</p>
+      <p><strong>Хобби и увлечения:</strong> {{questionnaire.hobbies || '—'}}</p>
+      <p><strong>Владение компьютерными программами:</strong> {{questionnaire.computerSkills || '—'}}</p>
+      <p><strong>Наличие автомобиля:</strong> {{questionnaire.hasCar ? 'Да' : 'Нет'}}</p>
+      <p *ngIf="questionnaire.hasCar"><strong>Категория прав:</strong> {{questionnaire.drivingLicenseCategory || '—'}}</p>
+
+      <!-- 6. Готовность к участию -->
+      <h3>6. Готовность к участию</h3>
+      <p><strong>Часов в месяц:</strong> {{questionnaire.hoursPerMonth || '—'}}</p>
+      <p><strong>Удобные дни недели:</strong> {{questionnaire.convenientDays || '—'}}</p>
+      <p><strong>Удобное время суток:</strong> {{questionnaire.convenientTime || '—'}}</p>
+
+      <!-- 7. Личностные качества -->
+      <h3>7. Личностные качества (от 1 до 10)</h3>
+      <p><strong>Ответственность:</strong> {{questionnaire.responsibility || '—'}}</p>
+      <p><strong>Коммуникабельность:</strong> {{questionnaire.communication || '—'}}</p>
+      <p><strong>Стрессоустойчивость:</strong> {{questionnaire.stressResistance || '—'}}</p>
+      <p><strong>Конфликтность:</strong> {{questionnaire.conflictLevel || '—'}}</p>
+
+      <!-- 8. Дополнительные сведения -->
+      <h3>8. Дополнительные сведения</h3>
+      <p><strong>Как проводите свободное время:</strong> {{questionnaire.freeTime || '—'}}</p>
+      <p><strong>Жизненный девиз:</strong> {{questionnaire.lifeMotto || '—'}}</p>
+      <p><strong>Другие комментарии:</strong> {{questionnaire.additionalComments || '—'}}</p>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-button (click)="goBack()">Назад</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <p *ngIf="loading">Загрузка...</p>
+  <p *ngIf="!questionnaire && !loading">Анкета не найдена.</p>
+</div>

@@ -6,10 +6,11 @@ import { ApplicationDto } from '../../../core/models/application.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { StatusTranslatePipe } from "../../../pipes/status-translate.pipe";
 
 interface MyApplication {
   id: number;
-  activityName: string;  // ← название мероприятия как строка
+  activityName: string;
   comment?: string;
   status: string;
   submissionDate: string;
@@ -18,7 +19,7 @@ interface MyApplication {
 @Component({
   selector: 'app-my-applications',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatTableModule, MatProgressSpinnerModule, StatusTranslatePipe],
   templateUrl: './my-applications.component.html',
   styleUrl: './my-applications.component.scss'
 })

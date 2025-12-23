@@ -42,17 +42,6 @@
         <input matInput formControlName="phone">
       </mat-form-field>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Год рождения</mat-label>
-        <input matInput type="number" formControlName="birthYear" placeholder="Например: 1995">
-      </mat-form-field>
-
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Языки</mat-label>
-        <input matInput formControlName="languages" placeholder="Русский, Английский, Немецкий">
-        <mat-hint>Через запятую</mat-hint>
-      </mat-form-field>
-
       <div class="actions">
         <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || loading">
           <mat-icon *ngIf="loading" class="spinner-small">autorenew</mat-icon>

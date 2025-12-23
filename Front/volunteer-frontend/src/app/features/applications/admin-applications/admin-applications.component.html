@@ -34,7 +34,7 @@
         <th mat-header-cell *matHeaderCellDef> Статус </th>
         <td mat-cell *matCellDef="let app">
           <span [style.color]="app.status === 'APPROVED' ? 'green' : app.status === 'REJECTED' ? 'red' : 'orange'">
-            {{app.status}}
+            {{app.status | statusTranslate}}
           </span>
         </td>
       </ng-container>

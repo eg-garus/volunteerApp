@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { ViewQuestionnaireComponent } from './features/questionnaire/view/view.component';
 
 export const appRoutes: Routes = [
   {
@@ -21,6 +22,7 @@ export const appRoutes: Routes = [
   loadComponent: () => import('./features/questionnaire/questionnaire-form/questionnaire-form.component').then(c => c.QuestionnaireFormComponent),
   canActivate: [authGuard]
   },
+  { path: 'questionnaire/view/:userId', component: ViewQuestionnaireComponent },
   {
     path: 'events/create',
     loadComponent: () => import('./features/events/form/form.component').then(r => r.FormComponent)

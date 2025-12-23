@@ -8,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 import { Questionnaire } from '../../model/questionnaire.model';
 import { ViewQuestionnaireComponent } from '../admin/view-questionnaire/view-questionnaire.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { StatusTranslatePipe } from "../../../pipes/status-translate.pipe";
 
 interface AdminApplication {
   id: number;
@@ -23,7 +24,7 @@ interface AdminApplication {
 @Component({
   selector: 'app-admin-applications',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule, MatDialogModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule, MatDialogModule, StatusTranslatePipe],
   templateUrl: './admin-applications.component.html',
   styleUrl: './admin-applications.component.scss'
 })
@@ -61,18 +62,16 @@ export class AdminApplicationsComponent implements OnInit {
       });
     }
   }
+
   viewQuestionnaire(userId: number) {
-    this.http.get<Questionnaire>(`${environment.apiUrl}/questionnaires/user/${userId}`).subscribe({
-      next: (questionnaire) => {
-        this.dialog.open(ViewQuestionnaireComponent, {
-          width: '800px',
-          data: { questionnaire }
-        });
-      },
-      error: () => {
-        alert('Анкета не найдена или ошибка загрузки');
-      }
-    });
+    if (!userId) {
+      alert('ID пользователя не найден');
+      return;
+    }
+
+    const url = `/questionnaire/view/${userId}`;
+
+    window.open(url, '_blank');
   }
 
   approve(id: number) {

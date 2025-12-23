@@ -2,6 +2,7 @@ export interface Questionnaire {
   education?: string | null;
   workplaceOrStudy?: string | null;
   foreignLanguages?: string | null;
+  birthYear?: number | null;
 
   hasVolunteerExperience?: boolean | null;
   volunteerOrganization?: string | null;
