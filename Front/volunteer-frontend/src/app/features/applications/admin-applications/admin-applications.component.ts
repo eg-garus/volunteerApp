@@ -1,14 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { Questionnaire } from '../../model/questionnaire.model';
-import { ViewQuestionnaireComponent } from '../admin/view-questionnaire/view-questionnaire.component';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { StatusTranslatePipe } from "../../../pipes/status-translate.pipe";
+
+// DataTables
+import DataTable from 'datatables.net-bs5';
+import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
+import 'datatables.net-buttons-bs5';
+import 'datatables.net-buttons/js/buttons.html5.min.js';
+import 'datatables.net-buttons/js/buttons.print.min.js';
+import * as $ from 'jquery';
 
 interface AdminApplication {
   id: number;
@@ -24,15 +28,42 @@ interface AdminApplication {
 @Component({
   selector: 'app-admin-applications',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatProgressSpinnerModule, MatDialogModule, StatusTranslatePipe],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    StatusTranslatePipe
+  ],
   templateUrl: './admin-applications.component.html',
   styleUrl: './admin-applications.component.scss'
 })
 export class AdminApplicationsComponent implements OnInit {
-  displayedColumns: string[] = ['userLogin', 'eventName', 'activityName', 'comment', 'submissionDate', 'status', 'actions'];
+  @ViewChild('dataTable') tableElement!: ElementRef;
+
   dataSource: AdminApplication[] = [];
   loading = true;
-  private dialog = inject(MatDialog);
+  private dataTableInstance: any;
+
+  // Ручная пагинация
+  currentPage = 1;
+  pageSize = 10;
+
+  get totalPages(): number {
+    return Math.ceil(this.dataSource.length / this.pageSize);
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -46,19 +77,62 @@ export class AdminApplicationsComponent implements OnInit {
       next: (apps) => {
         this.dataSource = apps;
         this.loading = false;
+        setTimeout(() => this.initDataTable(), 100);
       },
-      error: () => this.loading = false
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
+      }
+    });
+  }
+
+  private initDataTable() {
+    if (!this.tableElement?.nativeElement) {
+      console.warn('Таблица ещё не готова');
+      return;
+    }
+
+    if (this.dataTableInstance) {
+      this.dataTableInstance.destroy();
+      this.dataTableInstance = null;
+    }
+
+    this.dataTableInstance = new DataTable(this.tableElement.nativeElement, {
+      paging: false,          // отключаем встроенную пагинацию
+      searching: false,       // отключаем поиск (если не нужен)
+      info: false,            // отключаем "Записи с..."
+      lengthChange: false,    // отключаем выбор количества строк
+      ordering: true,         // сортировка остаётся
+      dom: 'Bfrtip',
+      buttons: [
+        { extend: 'copy', text: 'Копировать' },
+        { extend: 'csv', text: 'CSV' },
+        { extend: 'excel', text: 'Excel' },
+        { extend: 'pdf', text: 'PDF' },
+        { extend: 'print', text: 'Печать' }
+      ]
+    });
+  }
+
+  approve(id: number) {
+    this.http.put(`${environment.apiUrl}/applications/${id}/approve`, {}).subscribe({
+      next: () => this.reloadTable(),
+      error: () => alert('Ошибка одобрения')
+    });
+  }
+
+  reject(id: number) {
+    this.http.put(`${environment.apiUrl}/applications/${id}/reject`, {}).subscribe({
+      next: () => this.reloadTable(),
+      error: () => alert('Ошибка отклонения')
     });
   }
 
   delete(id: number) {
     if (confirm('Удалить заявку? Это действие необратимо.')) {
       this.http.delete(`${environment.apiUrl}/applications/${id}`).subscribe({
-        next: () => {
-          alert('Заявка удалена');
-          this.loadAllApplications();
-        },
-        error: () => alert('Ошибка при удалении')
+        next: () => this.reloadTable(),
+        error: () => alert('Ошибка удаления')
       });
     }
   }
@@ -68,21 +142,15 @@ export class AdminApplicationsComponent implements OnInit {
       alert('ID пользователя не найден');
       return;
     }
-
     const url = `/questionnaire/view/${userId}`;
-
     window.open(url, '_blank');
   }
 
-  approve(id: number) {
-    this.http.put(`${environment.apiUrl}/applications/${id}/approve`, {}).subscribe(() => {
-      this.loadAllApplications();
-    });
-  }
-
-  reject(id: number) {
-    this.http.put(`${environment.apiUrl}/applications/${id}/reject`, {}).subscribe(() => {
-      this.loadAllApplications();
-    });
+  private reloadTable() {
+    if (this.dataTableInstance) {
+      this.dataTableInstance.destroy();
+      this.dataTableInstance = null;
+    }
+    this.loadAllApplications();
   }
 }

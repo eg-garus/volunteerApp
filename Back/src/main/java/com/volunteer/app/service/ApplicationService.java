@@ -31,19 +31,23 @@ public class ApplicationService {
 
     @Transactional(readOnly = true)
     public List<ApplicationDto> findAllForAdmin() {
-    List<Application> apps = applicationRepository.findAll();
-    return apps.stream().map(app -> {
-        ApplicationDto dto = new ApplicationDto();
-        dto.setId(app.getId());
-        dto.setActivityName(app.getActivity().getName());
-        dto.setUserLogin(app.getUser().getLogin());  // ← добавь поле userLogin в DTO
-        dto.setComment(app.getComment());
-        dto.setStatus(app.getStatus());
-        dto.setSubmissionDate(app.getSubmissionDate());
-        dto.setUserId(app.getUser().getId());
-        return dto;
-    }).toList();
-}
+        List<Application> apps = applicationRepository.findAll();
+        return apps.stream().map(app -> {
+            ApplicationDto dto = new ApplicationDto();
+            dto.setId(app.getId());
+            dto.setUserLogin(app.getUser().getLogin());
+            dto.setActivityName(app.getActivity() != null ? app.getActivity().getName() : "Не указано");
+            // Если у Activity есть связь с Event — заполняем eventName
+            dto.setEventName(app.getActivity() != null && app.getActivity().getEvent() != null
+                ? app.getActivity().getEvent().getName()
+                : "Не указано");
+            dto.setComment(app.getComment());
+            dto.setStatus(app.getStatus());
+            dto.setSubmissionDate(app.getSubmissionDate());
+            dto.setUserId(app.getUser().getId());
+            return dto;
+        }).toList();
+    }
 
     @Transactional
     public void delete(Long id, String userLogin) {

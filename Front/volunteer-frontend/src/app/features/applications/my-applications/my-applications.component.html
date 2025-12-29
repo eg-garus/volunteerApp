@@ -1,38 +1,66 @@
-<h2>Мои заявки</h2>
+<div class="page-container">
+  <div class="card">
+    <h2 class="name-page">Мои заявки</h2>
 
-<mat-progress-spinner *ngIf="loading" mode="indeterminate"></mat-progress-spinner>
+    <mat-progress-spinner *ngIf="loading" mode="indeterminate" class="spinner"></mat-progress-spinner>
 
-<table mat-table [dataSource]="dataSource" *ngIf="!loading && dataSource.length > 0">
+    <table #dataTable class="my-custom-table" *ngIf="!loading && dataSource.length > 0">
+      <thead>
+        <tr>
+          <th>Мероприятие</th>
+          <th>Дата подачи</th>
+          <th>Статус</th>
+          <th>Комментарий</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of dataSource | slice: (currentPage - 1) * pageSize : currentPage * pageSize">
+          <td>{{app.activityName}}</td>
+          <td>{{app.submissionDate | date:'dd MMMM yyyy, HH:mm'}}</td>
+          <td>
+            <span [ngClass]="{
+              'status-approved': app.status === 'APPROVED',
+              'status-rejected': app.status === 'REJECTED',
+              'status-pending': app.status === 'PENDING'
+            }">
+              {{app.status | statusTranslate}}
+            </span>
+          </td>
+          <td>{{app.comment || '—'}}</td>
+          <td>
+            <button *ngIf="app.status === 'PENDING'" class="btn btn-revoke" (click)="delete(app.id)">
+              <i class="material-icons">undo</i> Отозвать
+            </button>
+            <span *ngIf="app.status !== 'PENDING'" class="no-action">—</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <ng-container matColumnDef="activityName">
-    <th mat-header-cell *matHeaderCellDef> Мероприятие </th>
-    <td mat-cell *matCellDef="let app"> {{app.activityName}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="submissionDate">
-    <th mat-header-cell *matHeaderCellDef> Дата подачи </th>
-    <td mat-cell *matCellDef="let app"> {{app.submissionDate | date:'dd MMMM yyyy, HH:mm' }} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef> Статус </th>
-    <td mat-cell *matCellDef="let app">
-      <span [style.color]="app.status === 'APPROVED' ? 'green' : app.status === 'REJECTED' ? 'red' : 'orange'">
-        {{app.status | statusTranslate}}
-      </span>
-      <button mat-raised-button color="warn" (click)="delete(app.id)" *ngIf="app.status === 'PENDING'" class="revoke-btn">
-        Отозвать заявку
+    <!-- Ручная пагинация -->
+    <div class="pagination" *ngIf="!loading && dataSource.length > 0">
+      <button class="page-btn" (click)="goToPage(1)" [disabled]="currentPage === 1">
+        Первая
       </button>
-    </td>
-  </ng-container>
+      <button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+        Предыдущая
+      </button>
 
-  <ng-container matColumnDef="comment">
-    <th mat-header-cell *matHeaderCellDef> Комментарий </th>
-    <td mat-cell *matCellDef="let app"> {{app.comment || '—'}} </td>
-  </ng-container>
+      <button *ngFor="let page of getPageNumbers()" class="page-btn"
+              [ngClass]="{'active': currentPage === page}"
+              (click)="goToPage(page)">
+        {{page}}
+      </button>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+      <button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+        Следующая
+      </button>
+      <button class="page-btn" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">
+        Последняя
+      </button>
+    </div>
 
-<p *ngIf="!loading && dataSource.length === 0">Вы ещё не подали ни одной заявки.</p>
+    <p *ngIf="!loading && dataSource.length === 0">Вы ещё не подали ни одной заявки.</p>
+  </div>
+</div>

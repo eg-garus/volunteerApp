@@ -4,7 +4,7 @@
 
     <div *ngIf="!loading && event">
       <h2 class="event-title">{{ event.name }}</h2>
-
+      <img mat-card-image [src]="event.imageUrl || 'assets/placeholder-event.jpg'" alt="{{ event.name }}" *ngIf="event.imageUrl">
       <div class="event-info">
         <p><strong>Описание:</strong> {{ event.description || 'Не указано' }}</p>
         <p><strong>Город:</strong> {{ event.city }}</p>

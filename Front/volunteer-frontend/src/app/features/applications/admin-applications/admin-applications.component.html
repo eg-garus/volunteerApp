@@ -1,57 +1,77 @@
 <div class="page-container">
   <div class="card">
-    <h2 class="name-page">Заявки волонтеров</h2>
+    <h2 class="name-page">Заявки волонтёров</h2>
 
     <mat-progress-spinner *ngIf="loading" mode="indeterminate" class="spinner"></mat-progress-spinner>
 
-    <table mat-table [dataSource]="dataSource" class="full-width" *ngIf="!loading">
-      <ng-container matColumnDef="userLogin">
-        <th mat-header-cell *matHeaderCellDef> Волонтёр </th>
-        <td mat-cell *matCellDef="let app"> {{app.userLogin}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="eventName">
-        <th mat-header-cell *matHeaderCellDef> Событие </th>
-        <td mat-cell *matCellDef="let app"> {{app.eventName}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="activityName">
-        <th mat-header-cell *matHeaderCellDef> Мероприятие </th>
-        <td mat-cell *matCellDef="let app"> {{app.activityName}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="comment">
-        <th mat-header-cell *matHeaderCellDef> Комментарий </th>
-        <td mat-cell *matCellDef="let app"> {{app.comment || '—'}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="submissionDate">
-        <th mat-header-cell *matHeaderCellDef> Дата подачи </th>
-        <td mat-cell *matCellDef="let app"> {{app.submissionDate | date:'dd.MM.yyyy HH:mm' }} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef> Статус </th>
-        <td mat-cell *matCellDef="let app">
-          <span [style.color]="app.status === 'APPROVED' ? 'green' : app.status === 'REJECTED' ? 'red' : 'orange'">
-            {{app.status | statusTranslate}}
-          </span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Действия </th>
-        <td mat-cell *matCellDef="let app">
-          <button mat-button color="primary" (click)="approve(app.id)" *ngIf="app.status === 'PENDING'">Одобрить</button>
-          <button mat-button color="warn" (click)="reject(app.id)" *ngIf="app.status === 'PENDING'">Отклонить</button>
-          <button mat-button color="accent" (click)="viewQuestionnaire(app.userId)">Просмотреть анкету</button>
-          <button mat-button color="accent" (click)="delete(app.id)">Удалить</button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <table #dataTable class="my-custom-table" *ngIf="!loading && dataSource.length > 0">
+      <thead>
+        <tr>
+          <th>Волонтёр</th>
+          <th>Событие</th>
+          <th>Мероприятие</th>
+          <th>Комментарий</th>
+          <th>Дата подачи</th>
+          <th>Статус</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of dataSource | slice: (currentPage - 1) * pageSize : currentPage * pageSize">
+          <td>{{app.userLogin}}</td>
+          <td>{{app.eventName}}</td>
+          <td>{{app.activityName}}</td>
+          <td>{{app.comment || '—'}}</td>
+          <td>{{app.submissionDate | date:'dd.MM.yyyy HH:mm'}}</td>
+          <td>
+            <span [ngClass]="{
+              'status-approved': app.status === 'APPROVED',
+              'status-rejected': app.status === 'REJECTED',
+              'status-pending': app.status === 'PENDING'
+            }">
+              {{app.status | statusTranslate}}
+            </span>
+          </td>
+          <td>
+            <button *ngIf="app.status === 'PENDING'" class="action-btn btn-approve" (click)="approve(app.id)">
+              <i class="material-icons">check</i> Одобрить
+            </button>
+            <button *ngIf="app.status === 'PENDING'" class="action-btn btn-reject" (click)="reject(app.id)">
+              <i class="material-icons">close</i> Отклонить
+            </button>
+            <button class="action-btn btn-view" (click)="viewQuestionnaire(app.userId)">
+              <i class="material-icons">visibility</i> Анкета
+            </button>
+            <button class="action-btn btn-delete" (click)="delete(app.id)">
+              <i class="material-icons">delete</i> Удалить
+            </button>
+          </td>
+        </tr>
+      </tbody>
     </table>
+
+    <!-- Ручная пагинация -->
+    <div class="pagination" *ngIf="!loading && dataSource.length > 0">
+      <button class="page-btn" (click)="goToPage(1)" [disabled]="currentPage === 1">
+        Первая
+      </button>
+      <button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+        Предыдущая
+      </button>
+
+      <button *ngFor="let page of getPageNumbers()" class="page-btn"
+              [ngClass]="{'active': currentPage === page}"
+              (click)="goToPage(page)">
+        {{page}}
+      </button>
+
+      <button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+        Следующая
+      </button>
+      <button class="page-btn" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">
+        Последняя
+      </button>
+    </div>
 
     <p *ngIf="!loading && dataSource.length === 0">Заявок пока нет.</p>
   </div>
