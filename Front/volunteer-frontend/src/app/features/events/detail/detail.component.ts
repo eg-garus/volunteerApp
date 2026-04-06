@@ -57,7 +57,7 @@ export class DetailComponent implements OnInit {
   }
 
   deleteEvent(id: number) {
-    if (confirm('Удалить событие? Это удалит все связанные задачи и заявки!')) {
+    if (confirm('Удалить событие? Это удалит все связанные мероприятия и заявки!')) {
       this.http.delete(`${environment.apiUrl}/events/${id}`).subscribe({
         next: () => {
           alert('Событие удалено');
@@ -70,15 +70,22 @@ export class DetailComponent implements OnInit {
     }
   }
 
+  isActivityActive(dateString: string): boolean {
+    if (!dateString) return false;
+    const activityDate = new Date(dateString);
+    const now = new Date();
+    return activityDate >= now;
+  }
+
   editActivity(id: number) {
     this.router.navigate(['/events', this.event?.id, 'activities', id, 'edit']);
   }
 
   deleteActivity(id: number) {
-    if (confirm('Удалить задачу?')) {
+    if (confirm('Удалить мероприятие?')) {
       this.http.delete(`${environment.apiUrl}/activities/${id}`).subscribe({
         next: () => {
-          alert('Задача удалена');
+          alert('Мероприятие удалено');
           this.loadActivities(this.event!.id);
         },
         error: () => alert('Ошибка при удалении')

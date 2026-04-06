@@ -32,7 +32,6 @@ public class UserDetailsImpl implements UserDetails {
         return user.getLogin();
     }
 
-    // остальные методы true
     @Override
     public boolean isAccountNonExpired() { return true; }
     @Override

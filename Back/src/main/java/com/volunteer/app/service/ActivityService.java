@@ -1,12 +1,13 @@
 package com.volunteer.app.service;
 
-import com.volunteer.app.entity.Activity;
-import com.volunteer.app.entity.Event;
-import com.volunteer.app.repository.ActivityRepository;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.volunteer.app.entity.Activity;
+import com.volunteer.app.entity.Event;
+import com.volunteer.app.repository.ActivityRepository;
 
 @Service
 public class ActivityService {
@@ -37,7 +38,7 @@ public class ActivityService {
     @Transactional(readOnly = true)
     public Activity findById(Long id) {
         return activityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Задача не найдена: " + id));
+                .orElseThrow(() -> new RuntimeException("Мероприятие не найдено: " + id));
     }
 
     @Transactional

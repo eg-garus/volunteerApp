@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';  // ← для ngModel
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
@@ -26,14 +26,15 @@ import { Event } from '../../../core/models/event.model';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule  // ← обязательно добавь
+    FormsModule
   ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
 export class ListComponent implements OnInit {
   events: Event[] = [];
-  filteredEvents: Event[] = [];
+  upcomingEvents: Event[] = [];
+  pastEvents: Event[] = [];
 
   searchText = '';
   selectedCity = '';
@@ -61,23 +62,26 @@ export class ListComponent implements OnInit {
     this.http.get<Event[]>(`${environment.apiUrl}/events`).subscribe({
       next: (events) => {
         this.events = events;
-        this.filteredEvents = events;
 
-        // Уникальные значения для фильтров
-        this.uniqueCities = [...new Set(events
-          .map(e => e.city)
-          .filter((c): c is string => !!c)  // ← тип-гвард, убирает undefined/null/пустые
-        )].sort();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        this.uniqueTypes = [...new Set(events
-          .map(e => e.type)
-          .filter((t): t is string => t != null && t.trim() !== '')  // убирает null, undefined, пустые строки
-        )].sort();
+        // Ближайшие (будущие и текущие)
+        this.upcomingEvents = events
+          .filter(e => new Date(e.startDate) >= today)
+          .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 
-        this.uniqueKinds = [...new Set(events
-          .map(e => e.kind)
-          .filter((k): k is string => k != null && k.trim() !== '')
-        )].sort();
+        // Архивные (прошедшие)
+        this.pastEvents = events
+          .filter(e => new Date(e.startDate) < today)
+          .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()); // новые сверху
+
+        // Уникальные для фильтров (из всех событий)
+        this.uniqueCities = [...new Set(events.map(e => e.city).filter(Boolean) as string[])].sort();
+        this.uniqueTypes = [...new Set(events.map(e => e.type).filter(Boolean) as string[])].sort();
+        this.uniqueKinds = [...new Set(events.map(e => e.kind).filter(Boolean) as string[])].sort();
+
+        this.applyFilter(); // применяем фильтр сразу
 
         this.loading = false;
       },
@@ -89,26 +93,33 @@ export class ListComponent implements OnInit {
   }
 
   applyFilter() {
-    let filtered = this.events;
+    let upcoming = this.upcomingEvents;
+    let past = this.pastEvents;
 
     if (this.searchText.trim()) {
       const search = this.searchText.toLowerCase();
-      filtered = filtered.filter(e => e.name.toLowerCase().includes(search));
+      upcoming = upcoming.filter(e => e.name.toLowerCase().includes(search));
+      past = past.filter(e => e.name.toLowerCase().includes(search));
     }
 
     if (this.selectedCity) {
-      filtered = filtered.filter(e => e.city === this.selectedCity);
+      upcoming = upcoming.filter(e => e.city === this.selectedCity);
+      past = past.filter(e => e.city === this.selectedCity);
     }
 
     if (this.selectedType) {
-      filtered = filtered.filter(e => e.type === this.selectedType);
+      upcoming = upcoming.filter(e => e.type === this.selectedType);
+      past = past.filter(e => e.type === this.selectedType);
     }
 
     if (this.selectedKind) {
-      filtered = filtered.filter(e => e.kind === this.selectedKind);
+      upcoming = upcoming.filter(e => e.kind === this.selectedKind);
+      past = past.filter(e => e.kind === this.selectedKind);
     }
 
-    this.filteredEvents = filtered;
+    // Обновляем отображаемые (но в шаблоне мы используем upcomingEvents и pastEvents напрямую)
+    this.upcomingEvents = upcoming;
+    this.pastEvents = past;
   }
 
   clearFilters() {
@@ -116,7 +127,7 @@ export class ListComponent implements OnInit {
     this.selectedCity = '';
     this.selectedType = '';
     this.selectedKind = '';
-    this.applyFilter();
+    this.loadEvents(); // перезагружаем, чтобы сбросить фильтр
   }
 
   hasFilters(): boolean {

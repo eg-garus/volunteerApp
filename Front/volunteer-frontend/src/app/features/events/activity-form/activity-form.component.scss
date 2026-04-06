@@ -10,7 +10,7 @@
   width: 100%;
   max-width: 800px;
   padding: 40px;
-  background: rgb(200, 199, 199);
+  background: rgb(80, 80, 80);
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 }
@@ -18,7 +18,7 @@
 .form-title {
   text-align: center;
   margin-bottom: 40px;
-  color: #333;
+  color: #ffe3e3;
   font-size: 1.8rem;
   font-weight: 500;
 }
@@ -37,7 +37,7 @@
 
 .section-title {
   margin: 0 0 24px 0;
-  color: #555;
+  color: #ffe3e3;
   font-size: 1.3rem;
   font-weight: 500;
 }
@@ -76,4 +76,9 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+mat-form-field {
+  color:#ffe3e3;
+  margin: 8px 0;
 }

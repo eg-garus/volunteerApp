@@ -1,7 +1,7 @@
 <div class="page-container">
   <div class="card">
     <h2 class="form-title">
-      {{ isEdit ? 'Редактировать задачу' : 'Создать задачу для события' }}
+      {{ isEdit ? 'Редактировать мероприятие' : 'Создать мероприятие для события' }}
     </h2>
 
     <mat-progress-spinner *ngIf="loading" mode="indeterminate" class="spinner"></mat-progress-spinner>
@@ -12,7 +12,7 @@
         <h3 class="section-title">Основная информация</h3>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Название задачи</mat-label>
+          <mat-label>Название мероприятия</mat-label>
           <input matInput formControlName="name" required>
           <mat-icon matSuffix>task</mat-icon>
           <mat-hint>Короткое и понятное название</mat-hint>
@@ -62,7 +62,7 @@
       <div class="actions">
         <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading" class="action-btn">
           <mat-icon *ngIf="loading" class="spinner-small">autorenew</mat-icon>
-          {{ isEdit ? 'Сохранить изменения' : 'Создать задачу' }}
+          {{ isEdit ? 'Сохранить изменения' : 'Создать мероприятие' }}
         </button>
         <button mat-button type="button" (click)="cancel()" [disabled]="loading" class="action-btn">
           Отмена

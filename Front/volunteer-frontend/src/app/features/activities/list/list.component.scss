@@ -1,3 +1,75 @@
-// .header-actions {
-//     margin:20px;
-// }
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+h2, h3 {
+  color: #1e88e5;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.page-container {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  margin-bottom: 30px;
+}
+
+mat-card {
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  }
+}
+
+mat-card-header {
+  margin-bottom: 16px;
+}
+
+mat-card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1565c0;
+}
+
+mat-card-subtitle {
+  color: #555;
+  font-weight: 500;
+}
+
+mat-card-content p {
+  margin: 12px 0;
+  font-size: 1rem;
+}
+
+strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.description {
+  color: #444;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+mat-card-actions {
+  margin-top: 20px;
+}

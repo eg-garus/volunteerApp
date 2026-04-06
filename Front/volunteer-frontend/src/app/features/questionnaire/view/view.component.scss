@@ -1,0 +1,48 @@
+.container {
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+mat-card {
+  background-color: #434343; /* тёмный фон карточки */
+  color: #e0e0e0; /* светлый текст по умолчанию */
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+mat-card-title {
+  color: #ffffff;
+  text-align: center; /* центрируем заголовок карточки */
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+}
+
+h3 {
+  color: #ffffff;
+  text-align: center; /* центрируем заголовки разделов */
+  margin: 32px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #444;
+}
+
+p {
+  margin: 12px 0;
+  font-size: 1.05rem;
+  color: #e0e0e0; /* светлый текст */
+}
+
+strong {
+  color: #ffffff; /* ещё светлее для выделения */
+  font-weight: 600;
+}
+
+mat-card-actions {
+  justify-content: center; /* центрируем кнопку */
+  margin-top: 24px;
+}
+
+button {
+  background-color: #1976d2;
+  color: white;
+}
