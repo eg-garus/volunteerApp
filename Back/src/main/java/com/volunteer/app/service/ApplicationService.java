@@ -37,7 +37,6 @@ public class ApplicationService {
             dto.setId(app.getId());
             dto.setUserLogin(app.getUser().getLogin());
             dto.setActivityName(app.getActivity() != null ? app.getActivity().getName() : "Не указано");
-            // Если у Activity есть связь с Event — заполняем eventName
             dto.setEventName(app.getActivity() != null && app.getActivity().getEvent() != null
                 ? app.getActivity().getEvent().getName()
                 : "Не указано");

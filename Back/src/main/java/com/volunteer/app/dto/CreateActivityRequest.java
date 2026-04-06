@@ -1,6 +1,7 @@
 package com.volunteer.app.dto;
 
 import com.volunteer.app.entity.Activity;
+
 import jakarta.validation.Valid;
 import lombok.Data;
 
@@ -11,7 +12,6 @@ public class CreateActivityRequest {
 
     private Long eventId;
 
-    // Lombok @Data генерирует геттеры/сеттеры, или добавь вручную
     public Activity getActivity() {
         return activity;
     }
