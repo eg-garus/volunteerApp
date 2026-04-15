@@ -9,11 +9,13 @@ import lombok.Data;
 @Data
 @Table(name = "locations")
 public class Location {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank @Size(min = 5, max = 30)
+    @NotBlank
+    @Size(min = 3, max = 100)
     private String name;
 
     private String address;

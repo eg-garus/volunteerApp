@@ -1,22 +1,11 @@
+// ActivityType.java
 package com.volunteer.app.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Table(name = "activity_types", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class ActivityType {
 
@@ -25,7 +14,8 @@ public class ActivityType {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String name; // например: "Экологический", "Культурный", "Спортивный"
+    private String name;
 
+    @Column(length = 300)
     private String description;
 }
